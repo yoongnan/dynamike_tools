@@ -1,0 +1,41 @@
+/* You can add global styles to this file, and also import other style files */
+html,
+body {
+    color: #666666;
+    // font-family: "Metropolis","Helvetica Neue",Helvetica,Arial,sans-serif!important;
+    font-size: 12px;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative;
+    // min-width: 1280px;
+    min-width: fit-content;
+    // width: 100%;
+}
+* {
+    box-sizing:border-box;
+    padding:0;margin:0
+}
+.ant-layout-has-sider{
+    // left:0px;
+    // position:relative;
+    // display: inline-flex;
+    
+    left: 0px;
+    // position: relative;
+}
+.ant-layout {
+    display: inline-flex;
+}
+// .ant-select-item-option-content {
+//     flex: auto;
+//     overflow: hidden;
+//     white-space: pre-line;
+//     text-overflow: ellipsis;
+// }
+.ant-layout-footer {
+    background: #4d5158;
+}
+
+.ant-page-header {
+    padding:0px;
+}

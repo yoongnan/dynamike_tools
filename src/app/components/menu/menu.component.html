@@ -1,0 +1,116 @@
+<!-- <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" nzBreakpoint="md" [nzCollapsedWidth]="0" > -->
+<!-- <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null" nzBreakpoint="md" [nzCollapsedWidth]="0" > -->
+<nav>
+<!-- <ul nz-menu nzMode="horizontal">   -->
+<ul nz-menu nzMode="inline" >
+  <li nz-menu-item (click)="click(1)">
+    {{navList[1].name}}
+  </li>
+  <li nz-submenu nzTitle="Purchase 进货" nzIcon="setting">
+    <ul>
+      <li nz-menu-group nzTitle="Maintenance">
+        <ul>
+          <!-- <li nz-menu-item (click)="click(4)" >{{navList[4].name}}</li> -->
+          <li nz-menu-item (click)="click(12)">{{navList[12].name}}</li>
+          <li nz-menu-item (click)="click(5)" >{{navList[5].name}}</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li nz-submenu nzTitle="Account 账簿" nzIcon="setting">
+    <ul>
+      <li nz-menu-group nzTitle="Maintenance">
+        <ul>
+          <li nz-menu-item (click)="click(8)" >{{navList[8].name}}</li>
+          <li nz-menu-item (click)="click(9)" >{{navList[9].name}}</li>
+          <li nz-menu-item (click)="click(20)" >{{navList[20].name}}</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li nz-submenu nzTitle="Product" nzIcon="setting">
+    <!-- <li nz-submenu nzTitle="Product 货品" > -->
+    <ul>
+      <li nz-menu-group nzTitle="Maintenance">
+        <ul>
+          <li nz-menu-item (click)="click(2)" >{{navList[2].name}}</li>
+          <li nz-menu-item (click)="click(10)" >{{navList[10].name}}</li>
+          <li nz-menu-item (click)="click(3)" >{{navList[3].name}}</li>
+          <li nz-menu-item (click)="click(21)" >{{navList[21].name}}</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li nz-submenu nzTitle="E-Shop 网店 Transaction" nzIcon="setting">
+    <ul>
+      <li nz-menu-group nzTitle="Maintenance">
+        <ul>
+          <li nz-menu-item (click)="click(6)" >{{navList[6].name}}</li>
+          <li nz-menu-item (click)="click(11)" >{{navList[11].name}}</li>
+          <li nz-menu-item (click)="click(7)" >{{navList[7].name}}</li>
+          <li nz-menu-item (click)="click(13)" >{{navList[13].name}}</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li nz-submenu nzTitle="点货 Stock Check" nzIcon="setting">
+    <ul>
+      <li nz-menu-group nzTitle="Maintenance">
+        <ul>
+          <li nz-menu-item (click)="click(19)" >{{navList[19].name}}</li>
+          <li nz-menu-item (click)="click(18)" >{{navList[18].name}}</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li nz-submenu nzTitle="其他 Others Configuration" nzIcon="setting">
+    <ul>
+      <li nz-menu-group nzTitle="Maintenance">
+        <ul>
+          <li nz-menu-item (click)="click(14)" >{{navList[14].name}}</li>
+          <li nz-menu-item (click)="click(15)" >{{navList[15].name}}</li>
+          <li nz-menu-item (click)="click(16)" >{{navList[16].name}}</li>
+          <li nz-menu-item (click)="click(17)" >{{navList[17].name}}</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <!-- <li nz-menu-item nzDisabled>
+    <i nz-icon nzType="appstore"></i>
+    Navigation Two
+  </li> -->
+  <!-- <li nz-submenu nzTitle="Purchases" nzIcon="setting">
+    <ul>
+      <li nz-menu-group nzTitle="Purchases">
+        <ul>
+          <li nz-menu-item>Listing</li>
+          <li nz-menu-item>Detail</li>
+        </ul>
+      </li>
+      <li nz-menu-group nzTitle="Item 2">
+        <ul>
+          <li nz-menu-item>Option 3</li>
+          <li nz-menu-item>Option 4</li>
+          <li nz-submenu nzTitle="Sub Menu">
+            <ul>
+              <li nz-menu-item nzDisabled>Option 5</li>
+              <li nz-menu-item>Option 6</li>
+            </ul>
+          </li>
+          <li nz-submenu nzDisabled nzTitle="Disabled Sub Menu">
+            <ul>
+              <li nz-menu-item>Option 5</li>
+              <li nz-menu-item>Option 6</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li nz-menu-item>
+    <a href="https://ng.ant.design" target="_blank" rel="noopener noreferrer">Navigation Four - Link</a>
+  </li> -->
+</ul>
+</nav>
+
+<!-- </nz-sider> -->

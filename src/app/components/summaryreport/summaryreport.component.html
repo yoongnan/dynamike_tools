@@ -1,0 +1,683 @@
+<div class="contain-inter" style="height: fit-content;display: table-footer-group;">
+    <!-- <div class="tableShow-area" [style.width]="tableShowWid" [style.overflow]="tableShowOverflow" -->
+    <button nz-button nzType="primary" (click)="init()"  ><i nz-icon nzType="reload"></i>Reload</button>
+    <div class="tableShow-area" [style.width]="tableShowWid" style="height: fit-content;"
+        (scroll)="onScroll($event)">
+        <!-- <div class="">
+            <nz-alert nzBanner nzMessage="Unselect 'Hide Legacy Releases' to check more interoperability." nzCloseable></nz-alert>
+        </div> -->
+        <style>
+            .displayText{
+                width:350px;
+            }
+            .inputWidth{
+                width:inherit;
+            }
+        </style>
+        
+        <div class="tableShow-table" >
+            <div style="width:100%">
+                <div style="display: flex;width: 100%;">
+                    <div style="width: 100%;">                        
+                        <label class="displayText">Year: </label>
+                        <nz-select [(ngModel)]="year_index" (ngModelChange)="AccountYearChange($event)"
+                            nzPlaceHolder="Select a Year">
+                            <ng-container *ngFor="let p of AccountYears">
+                                <nz-option *ngIf="!YearLoadSel" [nzValue]="p" [nzLabel]="p"></nz-option>
+                            </ng-container>
+                            <nz-option *ngIf="YearLoadSel" nzDisabled nzCustomContent>
+                                <i nz-icon nzType="loading" class="loading-icon"></i> Loading Data...
+                            </nz-option>
+                        </nz-select>
+                    </div>
+                </div>
+                <div style="display: inline-grid;width: 100%;margin-top: 10px;">
+                    <div style="width:100%">
+                        <label class="displayText">Total Sales / 总销售</label>
+                        <label >RM{{CapitalReport.sales}}</label>
+                    </div>
+                    <div style="width:100%">
+                        <label class="displayText">Total Expenditure / 总支出</label>
+                        <label >RM{{CapitalReport.expenditure}}</label>
+                    </div>
+                    <div style="width:100%">
+                        <label class="displayText">Total Profit / 总赚</label>
+                        <label >RM{{CapitalReport.earned}}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="summary" >
+                <div  style="min-width:30%;border: 2px solid grey;  margin: 10px;">
+                    <!-- <div [style.height]="'30px'" class="tableTop">
+                        <div class="thLeft" style="width:100%">
+                            <a class="columns" style="pointer-events: auto;"
+                                [ngStyle]="{'cursor':tableEmpty?'not-allowed':''}" nz-dropdown [nzDisabled]="tableEmpty"
+                                nzTrigger="click" [nzDropdownMenu]="menu">
+                                <span>
+                                    Hide Columns
+                                </span>
+                            </a>
+                            <nz-dropdown-menu #menu="nzDropdownMenu">
+                                <div class="dropDownCls">
+                                    <div class="Down-header">Show Columns</div>
+                                    <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="unCheck($event)">
+                                        <div nz-row>
+                                            <div *ngFor="let i of ShowColumnData" nz-col nzSpan="24"><label nz-checkbox
+                                                    [nzValue]="i" [nzDisabled]="i.disabled"
+                                                    [ngModel]="i.checked">{{i.name}}</label></div>
+                                        </div>
+                                    </nz-checkbox-wrapper>
+                                </div>
+                            </nz-dropdown-menu>
+                        </div>
+                    </div> -->
+                    <nz-table #groupingTable id="PurchaseTable" [nzData]="productListData" nzBordered nzSize="small"
+                        nzHideOnSinglePage="true" [nzFrontPagination]="false" [nzNoResult]="emptyTemplate">
+                        <ng-template #emptyTemplate>
+                            <!-- <tr>
+                                <nz-empty *ngIf="NoResultId=='No Data'" nzNotFoundImage="simple"></nz-empty>
+                                <nz-empty *ngIf="NoResultId=='No Result'" nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                                    [nzNotFoundContent]="contentTpl">
+                                    <ng-template #contentTpl>
+                                        <span> {{NoResultId}} </span>
+                                    </ng-template>
+                                </nz-empty>
+                            </tr> -->
+                        </ng-template>
+                        <thead>
+                            <tr>
+                                <th nzLeft class="firstTh" style="text-align: center;">
+                                    Captial Detail 本錢 : 
+                                </th>
+                                
+                                <th colspan="2" nzLeft class="firstTh" style="text-align: center;">
+                                    <tr nzLeft class="firstTh" style="text-align: center;">
+                                        {{year_index}}
+                                    </tr>
+                                    <tr nzLeft class="firstTh" style="text-align: center;">
+                                        RM
+                                    </tr>
+                                </th>
+                            </tr>
+                            <tr>
+                                <ng-container *ngFor="let release of columnData">
+                                    <th nz-tooltip [nzTooltipTitle]="titleTemplate" class="" nzLeft
+                                        style="text-align: center;top: 94px;z-index: 20;font-size: 12px;">
+                                        {{release.version}}
+                                        <span [ngClass]="{'techGuided' : !release.techGuided }"></span>
+                                        <span [ngClass]="{'genGuided': !release.genGuided }"></span>
+
+                                    </th>
+                                    <ng-template #titleTemplate>
+                                        <span>{{release.version}}</span><br>
+                                        <span>GA : {{formatTime(release.gaDate)}}</span><br>
+                                        <span *ngIf="release.rnLink"><a href="{{release.rnLink}}" target="_blank">Release
+                                                Notes</a><br></span>
+                                        <span *ngIf="release.dLink"><a href="{{release.dLink}}" target="_blank">Download
+                                                Page</a><br></span>
+                                    </ng-template>
+                                </ng-container>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- <ng-container *ngFor="let i of capitalinfo">   -->
+                                <!-- <tr>
+                                    <th >{{capitalinfo[5]}}</th>
+                                    <th >{{CapitalReport.inventory}}</th>
+                                </tr>
+                                <tr>
+                                    <th >{{capitalinfo[6]}}</th>
+                                    <th >{{CapitalReport.cash}}</th>
+                                </tr> -->
+                                <tr>
+                                    <th>{{capitalinfo[8]}}</th>
+                                    <th>
+                                        {{CapitalReport.totalCapital}}
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th >{{capitalinfo[0]}}</th>
+                                    <th >{{CapitalReport.bringForward}}</th>
+                                </tr>
+                                <tr>
+                                    <th >{{capitalinfo[7]}}</th>
+                                    <th >{{CapitalReport.dividend}}</th>
+                                </tr>
+                                <tr>
+                                    <th >{{capitalinfo[1]}}</th>
+                                    <th >{{CapitalReport.openAccount}}</th>
+                                </tr>
+                                <tr>
+                                    <th >{{capitalinfo[2]}}</th>
+                                    <th >{{CapitalReport.investment}}</th>
+                                </tr>
+                                <tr>
+                                    <th >{{capitalinfo[3]}}</th>
+                                    <th >{{CapitalReport.cash}}</th>
+                                </tr>
+                                <tr>
+                                    <th >{{capitalinfo[4]}}</th>
+                                    <th >{{CapitalReport.inventory}}</th>
+                                </tr>
+                            <!-- </ng-container> -->
+                        </tbody>
+                    </nz-table>
+                    <div id="PurchasePrint" [style.display]="copyType">
+                        <table>
+                            <tr>
+                                <th> </th>
+                                <ng-container *ngFor="let productName of headerName">                                
+                                    <th *ngFor="let release of headerNameArr[productName]">
+                                        {{release.productName}} {{release.version}} <span
+                                        *ngIf="!release.techGuided||!release.genGuided">*</span>
+                                    </th>
+                                </ng-container>
+                            </tr>
+                            <tbody>
+                                <tr *ngFor="let p of groupingTable.data">
+                                    <td>{{p.versionName}}                                    
+                                        <span *ngIf="!p.techGuided||!p.genGuided">*</span>
+                                    </td>
+                                    <ng-container *ngFor="let release of p.releases,let i = index">
+                                        <td *ngIf="release.footnotes==undefined" [style.background]="'#d7d7d7'"></td>
+                                        <td *ngIf="release.footnotes!=undefined">
+                                            <span>{{tableTdWords[release.status]}}</span>
+                                        </td>
+                                    </ng-container>
+                                </tr>
+                            </tbody>
+                            <tr></tr>
+                        </table>
+                        <span>* This is a legacy release. For more information, please refer to https://lifecycle.vmware.com.</span>
+                    </div>
+                </div>
+                <div  style="min-width:30%;border: 2px solid grey;  margin: 10px;">
+                    <!-- <div [style.height]="'30px'" class="tableTop">
+                        <div class="thLeft" style="width:100%">
+                            <a class="columns" style="pointer-events: auto;"
+                                [ngStyle]="{'cursor':tableEmpty?'not-allowed':''}" nz-dropdown [nzDisabled]="tableEmpty"
+                                nzTrigger="click" [nzDropdownMenu]="menu">
+                                <span>
+                                    Hide Columns
+                                </span>
+                            </a>
+                            <nz-dropdown-menu #menu="nzDropdownMenu">
+                                <div class="dropDownCls">
+                                    <div class="Down-header">Show Columns</div>
+                                    <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="unCheck($event)">
+                                        <div nz-row>
+                                            <div *ngFor="let i of ShowColumnData" nz-col nzSpan="24"><label nz-checkbox
+                                                    [nzValue]="i" [nzDisabled]="i.disabled"
+                                                    [ngModel]="i.checked">{{i.name}}</label></div>
+                                        </div>
+                                    </nz-checkbox-wrapper>
+                                </div>
+                            </nz-dropdown-menu>
+                        </div>
+                    </div> -->
+                    <nz-table #groupingTable id="PurchaseTable" [nzData]="productListData" nzBordered nzSize="small"
+                        nzHideOnSinglePage="true" [nzFrontPagination]="false" [nzNoResult]="emptyTemplate">
+                        <!-- <ng-template #emptyTemplate>
+                            <tr>
+                                <nz-empty *ngIf="NoResultId=='No Data'" nzNotFoundImage="simple"></nz-empty>
+                                <nz-empty *ngIf="NoResultId=='No Result'" nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                                    [nzNotFoundContent]="contentTpl">
+                                    <ng-template #contentTpl>
+                                        <span> {{NoResultId}} </span>
+                                    </ng-template>
+                                </nz-empty>
+                            </tr>
+                        </ng-template> -->
+                        <thead>
+                            <tr>
+                                <th nzLeft class="firstTh" style="text-align: center;">
+                                    账簿 : 
+                                </th>
+                                
+                                <th colspan="2" nzLeft class="firstTh" style="text-align: center;">
+                                    <tr nzLeft class="firstTh" style="text-align: center;">
+                                        {{year_index}}
+                                    </tr>
+                                    <tr nzLeft class="firstTh" style="text-align: center;">
+                                        RM
+                                    </tr>
+                                </th>
+                            </tr>
+                            <tr>
+                                <ng-container *ngFor="let release of columnData">
+                                    <th nz-tooltip [nzTooltipTitle]="titleTemplate" class="" nzLeft
+                                        style="text-align: center;top: 94px;z-index: 20;font-size: 12px;">
+                                        {{release.version}}
+                                        <span [ngClass]="{'techGuided' : !release.techGuided }"></span>
+                                        <span [ngClass]="{'genGuided': !release.genGuided }"></span>
+
+                                    </th>
+                                    <ng-template #titleTemplate>
+                                        <span>{{release.version}}</span><br>
+                                        <span>GA : {{formatTime(release.gaDate)}}</span><br>
+                                        <span *ngIf="release.rnLink"><a href="{{release.rnLink}}" target="_blank">Release
+                                                Notes</a><br></span>
+                                        <span *ngIf="release.dLink"><a href="{{release.dLink}}" target="_blank">Download
+                                                Page</a><br></span>
+                                    </ng-template>
+                                </ng-container>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- <ng-container *ngFor="let p of ledger.header, let i = index">   -->
+                            
+                                <!-- <tr>
+                                    <th >{{ledger[0]}}</th>
+                                    <th >{{ExpenditureReport.total}}</th>
+                                </tr> -->
+                                <tr>
+                                    <th >{{ledger[1]}}</th>
+                                    <th >{{ExpenditureReport.inventory}}</th>
+                                </tr>
+                                <tr>
+                                    <th >{{ledger[2]}}</th>
+                                    <th >{{ExpenditureReport.packages}}</th>
+                                </tr>
+                                <tr>
+                                    <th >{{ledger[3]}}</th>
+                                    <th >{{ExpenditureReport.advertise}}</th>
+                                </tr>
+                                <tr>
+                                    <th >{{ledger[4]}}</th>
+                                    <th >{{ExpenditureReport.equipment}}</th>
+                                </tr>
+                                <tr>
+                                    <th >{{ledger[5]}}</th>
+                                    <th >{{ExpenditureReport.refund}}</th>
+                                </tr>
+                                <tr>
+                                    <th >{{ledger[6]}}</th>
+                                    <th >{{ExpenditureReport.lost}}</th>
+                                </tr>
+                                <tr>
+                                    <th >{{ledger[7]}}</th>
+                                    <th >{{ExpenditureReport.subsidy}}</th>
+                                </tr>                            
+                            <!-- </ng-container> -->
+                        </tbody>
+                    </nz-table>
+                    <div id="PurchasePrint" [style.display]="copyType">
+                        <table>
+                            <tr>
+                                <th> </th>
+                                <ng-container *ngFor="let productName of headerName">                                
+                                    <th *ngFor="let release of headerNameArr[productName]">
+                                        {{release.productName}} {{release.version}} <span
+                                        *ngIf="!release.techGuided||!release.genGuided">*</span>
+                                    </th>
+                                </ng-container>
+                            </tr>
+                            <tbody>
+                                <tr *ngFor="let p of groupingTable.data">
+                                    <td>{{p.versionName}}                                    
+                                        <span *ngIf="!p.techGuided||!p.genGuided">*</span>
+                                    </td>
+                                    <ng-container *ngFor="let release of p.releases,let i = index">
+                                        <td *ngIf="release.footnotes==undefined" [style.background]="'#d7d7d7'"></td>
+                                        <td *ngIf="release.footnotes!=undefined">
+                                            <span>{{tableTdWords[release.status]}}</span>
+                                        </td>
+                                    </ng-container>
+                                </tr>
+                            </tbody>
+                            <tr></tr>
+                        </table>
+                        <span>* This is a legacy release. For more information, please refer to https://lifecycle.vmware.com.</span>
+                    </div>
+                </div>
+                <div  style="min-width:30%;border: 2px solid grey;  margin: 10px;">
+                    <nz-table #groupingTable id="PurchaseTable" [nzData]="productListData" nzBordered nzSize="small"
+                        nzHideOnSinglePage="true" [nzFrontPagination]="false" [nzNoResult]="emptyTemplate">
+                        <!-- <ng-template #emptyTemplate>
+                            <tr>
+                                <nz-empty *ngIf="NoResultId=='No Data'" nzNotFoundImage="simple"></nz-empty>
+                                <nz-empty *ngIf="NoResultId=='No Result'" nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                                    [nzNotFoundContent]="contentTpl">
+                                    <ng-template #contentTpl>
+                                        <span> {{NoResultId}} </span>
+                                    </ng-template>
+                                </nz-empty>
+                            </tr>
+                        </ng-template> -->
+                        <thead>
+                            <tr>
+                                <th nzLeft class="firstTh" style="text-align: center;">
+                                    流動資金 : 
+                                </th>
+                                
+                                <th colspan="2" nzLeft class="firstTh" style="text-align: center;">
+                                    <tr nzLeft class="firstTh" style="text-align: center;">
+                                        {{this_year}}
+                                    </tr>
+                                    <tr nzLeft class="firstTh" style="text-align: center;">
+                                        RM
+                                    </tr>
+                                </th>
+                            </tr>
+                            <tr>
+                                <ng-container *ngFor="let release of columnData">
+                                    <th nz-tooltip [nzTooltipTitle]="titleTemplate" class="" nzLeft
+                                        style="text-align: center;top: 94px;z-index: 20;font-size: 12px;">
+                                        {{release.version}}
+                                        <span [ngClass]="{'techGuided' : !release.techGuided }"></span>
+                                        <span [ngClass]="{'genGuided': !release.genGuided }"></span>
+
+                                    </th>
+                                    <ng-template #titleTemplate>
+                                        <span>{{release.version}}</span><br>
+                                        <span>GA : {{formatTime(release.gaDate)}}</span><br>
+                                        <span *ngIf="release.rnLink"><a href="{{release.rnLink}}" target="_blank">Release
+                                                Notes</a><br></span>
+                                        <span *ngIf="release.dLink"><a href="{{release.dLink}}" target="_blank">Download
+                                                Page</a><br></span>
+                                    </ng-template>
+                                </ng-container>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- <ng-container *ngFor="let i of cashflow">   -->
+                                <tr>
+                                    <th >{{cashflow[0]}}</th>
+                                    <th >{{CashFlowReport.total}}</th>
+                                </tr>
+                                <tr>
+                                    <th >{{cashflow[1]}}</th>
+                                    <th >{{CashFlowReport.bankAccount}}</th>
+                                </tr>
+                                <tr>
+                                    <th >{{cashflow[2]}}</th>
+                                    <th >{{CashFlowReport.cash}}</th>
+                                </tr>
+                                <tr>
+                                    <th >{{cashflow[3]}}</th>
+                                    <th >{{CashFlowReport.shopeeWallet}}</th>
+                                </tr>
+                                <tr>
+                                    <th >{{cashflow[4]}}</th>
+                                    <th >{{CashFlowReport.lazadaWallet}}</th>
+                                </tr>
+                                <tr>
+                                    <th >{{cashflow[5]}}</th>
+                                    <th >{{CashFlowReport.wallet}}</th>
+                                </tr>
+                                <tr>
+                                    <th >{{cashflow[6]}}</th>
+                                    <th >{{CashFlowReport.insurance}}</th>
+                                </tr>
+                            <!-- </ng-container> -->
+                        </tbody>
+                    </nz-table>
+                    <div id="PurchasePrint" [style.display]="copyType">
+                        <table>
+                            <tr>
+                                <th> </th>
+                                <ng-container *ngFor="let productName of headerName">                                
+                                    <th *ngFor="let release of headerNameArr[productName]">
+                                        {{release.productName}} {{release.version}} <span
+                                        *ngIf="!release.techGuided||!release.genGuided">*</span>
+                                    </th>
+                                </ng-container>
+                            </tr>
+                            <tbody>
+                                <tr *ngFor="let p of groupingTable.data">
+                                    <td>{{p.versionName}}                                    
+                                        <span *ngIf="!p.techGuided||!p.genGuided">*</span>
+                                    </td>
+                                    <ng-container *ngFor="let release of p.releases,let i = index">
+                                        <td *ngIf="release.footnotes==undefined" [style.background]="'#d7d7d7'"></td>
+                                        <td *ngIf="release.footnotes!=undefined">
+                                            <span>{{tableTdWords[release.status]}}</span>
+                                        </td>
+                                    </ng-container>
+                                </tr>
+                            </tbody>
+                            <tr></tr>
+                        </table>
+                        <span>* This is a legacy release. For more information, please refer to https://lifecycle.vmware.com.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="detail_btn">
+                <button nz-button nzType="primary" (click)="showDetail()"  ><i nz-icon nzType="reload"></i>Detail</button>
+            </div>
+            <div id="detail" class="detail_report" style="border: 2px solid grey;  margin-top: 10px;margin-bottom: 10px;">
+                <div class="divBut">
+                    <nz-button-group nzSize="small" class="tableBut">
+                        <button nzType="primary" title="{{tooltipOne[0]}}" nz-button [disabled]="tableEmpty"
+                            (click)="printLink()">Print</button>
+                        <button nzType="primary" title="{{tooltipOne[1]}}" nz-button [disabled]="tableEmpty"
+                            (click)="CSVlink()">CSV</button>
+                        <button nzType="primary" title="{{tooltipOne[2]}}" nz-button [disabled]="tableEmpty"
+                            (click)="copyClick()">Copy</button>
+                    </nz-button-group>
+                </div>
+                <div [style.height]="'30px'" class="tableTop">
+                    <div class="thLeft" style="width:100%">
+                        <a class="columns" style="pointer-events: auto;"
+                            [ngStyle]="{'cursor':tableEmpty?'not-allowed':''}" nz-dropdown [nzDisabled]="tableEmpty"
+                            nzTrigger="click" [nzDropdownMenu]="menu">
+                            <span>
+                                Hide Columns
+                            </span>
+                        </a>
+                        <nz-dropdown-menu #menu="nzDropdownMenu">
+                            <div class="dropDownCls">
+                                <div class="Down-header">Show Columns</div>
+                                <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="unCheck($event)">
+                                    <div nz-row>
+                                        <div *ngFor="let i of ShowColumnData" nz-col nzSpan="24"><label nz-checkbox
+                                                [nzValue]="i" [nzDisabled]="i.disabled"
+                                                [ngModel]="i.checked">{{i.name}}</label></div>
+                                    </div>
+                                </nz-checkbox-wrapper>
+                            </div>
+                        </nz-dropdown-menu>
+                    </div>
+                </div>
+                <nz-table #groupingTable id="PurchaseTable" [nzData]="productListData" nzBordered nzSize="small"
+                    nzHideOnSinglePage="true" [nzFrontPagination]="false" [nzNoResult]="emptyTemplate">
+                    <ng-template #emptyTemplate>
+                        <tr>
+                            <nz-empty *ngIf="NoResultId=='No Data'" nzNotFoundImage="simple"></nz-empty>
+                            <nz-empty *ngIf="NoResultId=='No Result'" nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                                [nzNotFoundContent]="contentTpl">
+                                <ng-template #contentTpl>
+                                    <span> {{NoResultId}} </span>
+                                </ng-template>
+                            </nz-empty>
+                        </tr>
+                    </ng-template>
+                    <thead>
+                        <tr>
+                            <th rowspan="2" nzWidth="1%" nzLeft class="lenged">
+                                月份
+                                <!-- <div style="width: 330px;display: flex;">
+                                </div> -->
+                            </th>
+                            <th nzLeft class="firstTh" style="text-align: center;top: 54px;z-index: 20;">内容</th>
+                            <th nzLeft class="firstTh" style="text-align: center;top: 54px;z-index: 20;">
+                                RM
+                            </th>
+                            <th nzLeft class="firstTh" style="text-align: center;top: 54px;z-index: 20;">
+                                RM
+                            </th>
+                            <th nzLeft class="firstTh" style="text-align: center;top: 54px;z-index: 20;">
+                                RM
+                            </th>
+                            <th nzLeft class="firstTh" style="text-align: center;top: 54px;z-index: 20;"></th>
+                            <th nzLeft class="firstTh" style="text-align: center;top: 54px;z-index: 20;"
+                                    [colspan]="1">
+                                    單數
+                            </th>
+                            <th nzLeft class="firstTh" style="text-align: center;top: 54px;z-index: 20;"
+                                    [colspan]="1">
+                                    Stock & Cash / 货 + 现金
+                            </th>
+                            <th nzLeft class="firstTh" style="text-align: center;top: 54px;z-index: 20;"
+                                    [colspan]="1">
+                                    Earned / 赚
+                            </th>
+                        </tr>
+                        <tr>
+                            <ng-container *ngFor="let release of columnData">
+                                <th nz-tooltip [nzTooltipTitle]="titleTemplate" class="" nzLeft
+                                    style="text-align: center;top: 94px;z-index: 20;font-size: 12px;">
+                                    {{release.version}}
+                                    <span [ngClass]="{'techGuided' : !release.techGuided }"></span>
+                                    <span [ngClass]="{'genGuided': !release.genGuided }"></span>
+
+                                </th>
+                                <ng-template #titleTemplate>
+                                    <span>{{release.version}}</span><br>
+                                    <span>GA : {{formatTime(release.gaDate)}}</span><br>
+                                    <span *ngIf="release.rnLink"><a href="{{release.rnLink}}" target="_blank">Release
+                                            Notes</a><br></span>
+                                    <span *ngIf="release.dLink"><a href="{{release.dLink}}" target="_blank">Download
+                                            Page</a><br></span>
+                                </ng-template>
+                            </ng-container>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let p of monthReport; let i =index">  
+                            <!-- <style>
+                                tr>td>div>div{
+                                    border: 1px solid #f0f0f0;
+                                    min-height: 12px;
+                                    min-width:50px;
+                                }
+                            </style>
+                            <tr>
+                                <td >{{month[i]}}</td>
+                                <td>
+                                    <div>
+                                        <div>Sales / 销售</div>
+                                        <div >Expenditure / 支出</div>
+                                        <div >Balance</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div>{{p.sale}}</div>
+                                        <div ></div>
+                                        <div ></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div></div>
+                                        <div >{{p.expenditure}}</div>
+                                        <div ></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div></div>
+                                        <div></div>
+                                        <div >{{p.balance}}</div>
+                                    </div>
+                                </td>                            
+                                <td>
+                                    <div>
+                                        <div>Lazada: {{p.lazada}}</div>
+                                        <div>Shopee: {{p.shopee}}</div>
+                                        <div>Local Shop: {{p.localShop}}</div>
+                                    </div>
+                                </td>                         
+                                <td>
+                                    <div>
+                                        <div>{{p.stocks}}</div>
+                                        <div></div>
+                                        <div>單數，共</div>
+                                    </div>
+                                </td>                        
+                                <td>
+                                    <div>
+                                        <div>{{p.inventoryCash}}</div>
+                                        <div></div>
+                                        <div>{{p.orderCount}}</div>
+                                    </div>
+                                </td>                        
+                                <td>
+                                    <div>
+                                        <div></div>
+                                        <div></div>
+                                        <div>{{p.earned}}</div>
+                                    </div>
+                                </td>
+                            </tr> -->
+                            <td style="border-top:  1px solid black;border-bottom:  1px solid black;" rowspan="4">{{month[i]}}</td>
+                            <tr style="border-top:  1px solid black;" >
+                                <td>Sales / 销售</td>
+                                        <td>{{p.sale}}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>Lazada: {{p.lazada}}</td>
+                                        <td>{{p.stocks}}</td>
+                                        <td>{{p.inventoryCash}}</td>
+                                        <td></td>
+                            </tr>
+                            <tr>
+                                <td >Expenditure / 支出</td>
+                                        <td></td>
+                                        <td>{{p.expenditure}}</td>
+                                        <td></td>
+                                        <td>Shopee: {{p.shopee}}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                            </tr>
+                            <tr style="border-bottom:  1px solid black;" >
+                                <td style="border-bottom:  1px solid black;" >Balance</td>
+                                        <td style="border-bottom:  1px solid black;" ></td>
+                                        <td style="border-bottom:  1px solid black;" ></td>
+                                        <td style="border-bottom:  1px solid black;" >{{p.balance}}</td>
+                                        <td style="border-bottom:  1px solid black;" >Local Shop: {{p.localShop}}</td>
+                                        <td style="border-bottom:  1px solid black;" >單數，共</td>
+                                        <td style="border-bottom:  1px solid black;" >{{p.orderCount}}</td>
+                                        <td style="border-bottom:  1px solid black;" >{{p.earned}}</td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </nz-table>
+                <div id="PurchasePrint" [style.display]="copyType">
+                    <table>
+                        <tr>
+                            <th> </th>
+                            <ng-container *ngFor="let productName of headerName">                                
+                                <th *ngFor="let release of headerNameArr[productName]">
+                                    {{release.productName}} {{release.version}} <span
+                                    *ngIf="!release.techGuided||!release.genGuided">*</span>
+                                </th>
+                            </ng-container>
+                        </tr>
+                        <tbody>
+                            <tr *ngFor="let p of groupingTable.data">
+                                <td>{{p.versionName}}                                    
+                                    <span *ngIf="!p.techGuided||!p.genGuided">*</span>
+                                </td>
+                                <ng-container *ngFor="let release of p.releases,let i = index">
+                                    <td *ngIf="release.footnotes==undefined" [style.background]="'#d7d7d7'"></td>
+                                    <td *ngIf="release.footnotes!=undefined">
+                                        <span>{{tableTdWords[release.status]}}</span>
+                                    </td>
+                                </ng-container>
+                            </tr>
+                        </tbody>
+                        <tr></tr>
+                    </table>
+                    <span>* This is a legacy release. For more information, please refer to https://lifecycle.vmware.com.</span>
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</div>
+<ngx-loading [show]="isVisible" [config]="{ backdropBorderRadius: '3px'}" [template]="customLoadingTemplate">
+</ngx-loading>

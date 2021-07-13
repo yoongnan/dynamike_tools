@@ -1,0 +1,213 @@
+<div class="contain-inter">
+    <div style="width:100%;display:inline-block;border-bottom: orangered 1px solid;">
+        <h2 style="float:left;"><span>Product 货品</span></h2>
+        <div style="display: flex;margin-left:250px">                    
+            <div style="width:100%">
+                
+                    <label class="displayText">Product / 货品:</label>
+                    <input  [(ngModel)]="product_name" />
+                    <nz-button-group nzSize="small" class="tableBut" >
+                        <button nzType="primary" title="" nz-button
+                            (click)="searchProduct()">Search / 寻找记录</button>
+                    </nz-button-group>
+                <label class="displayText">Product Type / 货品种类 :</label>
+                <nz-select class="inputWidth" #productTypeselect
+                [(ngModel)]="product_type" (ngModelChange)="ProductTypeChange($event)"
+                    nzPlaceHolder="Select a Product Type">                    
+                    <nz-option
+                        [nzValue]="0" [nzLabel]="Other"></nz-option>
+                    <ng-container *ngFor="let p of ProductTypes">
+                        <nz-option *ngIf="!ProductTypeLoadSel" 
+                        [nzValue]="p.id" [nzLabel]="p.description"></nz-option>
+                        
+                        <!-- <ng-select *ngIf="!ProductTypeLoadSel" [items]="p" 
+                                bindLabel="description" 
+                                bindValue="id" 
+                                [(ngModel)]="product_type"> -->
+                    </ng-container>
+                    <nz-option *ngIf="ProductTypeLoadSel" nzDisabled nzCustomContent>
+                        <i nz-icon nzType="loading" class="loading-icon"></i> Loading Data...
+                    </nz-option>
+                </nz-select>
+            </div>
+            <button nz-button nzType="primary" (click)="init()"  ><i nz-icon nzType="reload"></i>Reload</button>
+        </div>
+        <div class="divBut" style="float:right">
+            <nz-button-group nzSize="small" class="tableBut">
+                <button nzType="primary" title="{{tooltipOne[0]}}" nz-button [disabled]="tableEmpty"
+                    (click)="printLink()">Print</button>
+                <button nzType="primary" title="{{tooltipOne[1]}}" nz-button [disabled]="tableEmpty"
+                    (click)="CSVlink()">CSV</button>
+                <button nzType="primary" title="{{tooltipOne[2]}}" nz-button [disabled]="tableEmpty"
+                    (click)="copyClick()">Copy</button>
+            </nz-button-group>
+        </div>
+    </div>
+    <div class="tableShow-area" [style.width]="tableShowWid"  style="height: fit-content;"
+        (scroll)="onScroll($event)">
+        <!-- <div class="">
+            <nz-alert nzBanner nzMessage="Unselect 'Hide Legacy Releases' to check more interoperability." nzCloseable></nz-alert>
+        </div> -->
+        <div class="tableShow-table">
+            <div class="butArea">
+                <div [style.height]="'30px'" class="tableTop">
+                    <div class="thLeft" style="width:100%">
+                        <a class="columns" style="pointer-events: auto;"
+                            [ngStyle]="{'cursor':tableEmpty?'not-allowed':''}" nz-dropdown [nzDisabled]="tableEmpty"
+                            nzTrigger="click" [nzDropdownMenu]="menu">
+                            <span>
+                                Hide Columns
+                            </span>
+                        </a>
+                        <nz-dropdown-menu #menu="nzDropdownMenu">
+                            <div class="dropDownCls">
+                                <div class="Down-header">Show Columns</div>
+                                <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="unCheck($event)">
+                                    <div nz-row>
+                                        <div *ngFor="let i of ShowColumnData" nz-col nzSpan="24"><label nz-checkbox
+                                                [nzValue]="i" [nzDisabled]="i.disabled"
+                                                [ngModel]="i.checked">{{i.name}}</label></div>
+                                    </div>
+                                </nz-checkbox-wrapper>
+                            </div>
+                        </nz-dropdown-menu>
+                    </div>
+                </div>
+                <nz-table style="table-layout: fixed;" #groupingTable id="PurchaseTable" [nzData]="ProductData" nzBordered nzSize="small"
+                    nzHideOnSinglePage="true" [nzFrontPagination]="true" [nzNoResult]="emptyTemplate">
+                    <ng-template #emptyTemplate>
+                        <tr>
+                            <nz-empty *ngIf="NoResultId=='No Data'" nzNotFoundImage="simple"></nz-empty>
+                            <nz-empty *ngIf="NoResultId=='No Result'" nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                                [nzNotFoundContent]="contentTpl">
+                                <ng-template #contentTpl>
+                                    <span> {{NoResultId}} </span>
+                                </ng-template>
+                            </nz-empty>
+                        </tr>
+                    </ng-template>
+                    <thead>
+                        <tr>
+                            <ng-container *ngFor="let header of headerData" >
+                                <!-- <th nzLeft class="firstTh" style="word-wrap: break-word;text-align: center;top: 30px;z-index: 20;position:sticky"
+                                [colspan]="1"> -->
+                                <th nzLeft class="firstTh" style="text-align: center;top: 29px;z-index: 20;"
+                                [colspan]="1">
+                                
+                                {{header}}
+                                </th>    
+                            </ng-container>
+                        </tr>
+                        
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let p of ProductData, let i = index">
+                            <tr >
+                                <td>
+                                    <img style="width:100px;height:100px"  [src]="formatImage(p.product.image)" />
+                                </td> 
+                                <td style="width:80px">
+                                    {{p.product.id}}
+                                </td>   
+                                <td style="width:200px">
+                                    {{p.product.name}}
+                                </td>   
+                                <style>
+                                    .listingeditinput{
+                                        width:80px;
+                                        text-align: end;
+                                    }
+                                </style>   
+                                <td class="trDisplayLabel{{i}}">
+                                    {{p.product.unitCost}}
+                                </td>  
+                                <td class="trEditLabel{{i}}" style="display:none">
+                                    <input  class="listingeditinput" (change)="setPrice(i)"  [(ngModel)]="p.product.unitCost" />
+                                </td>   
+                                <td class="trDisplayLabel{{i}}">
+                                    {{p.product.stock}}
+                                </td>                                       
+                                <td class="trEditLabel{{i}}" style="display:none">
+                                    <input  class="listingeditinput" (change)="calTotalStock(i)"  [(ngModel)]="p.product.stock" />
+                                </td>                                   
+                                <td>
+                                    {{p.product.totalStock}}
+                                </td>     
+                                <td class="trDisplayLabel{{i}}">
+                                    {{p.sellingPrice}}
+                                </td>  
+                                <td class="trEditLabel{{i}}" style="display:none">
+                                    <input  class="listingeditinput"  [(ngModel)]="p.sellingPrice" />
+                                </td> 
+                                <td>
+                                    {{p.price_50}}
+                                </td> 
+                                <td>
+                                    {{p.price_10}}
+                                </td>  
+                                <td class="trDisplayLabel{{i}}">
+                                    {{p.product.weight}}
+                                </td>    
+                                <td class="trEditLabel{{i}}" style="display:none">
+                                    <input  class="listingeditinput"  [(ngModel)]="p.product.weight" />
+                                </td>         
+                                <td class="trDisplayLabel{{i}}">
+                                    {{p.product.dimension}}
+                                </td>  
+                                <td class="trEditLabel{{i}}" style="display:none">
+                                    <input  class="listingeditinput"  [(ngModel)]="p.product.dimension" />
+                                </td>         
+                                <td class="trDisplayLabel{{i}}">
+                                    {{p.researchPrice}}
+                                </td>  
+                                <td class="trEditLabel{{i}}" style="display:none">
+                                    <input  class="listingeditinput"  [(ngModel)]="p.researchPrice" />
+                                </td>     
+                                <td>
+                                    <button nz-button [nzType]="'primary'" (click)="updateProduct(i)" ><span>Update</span></button>
+                                </td>
+                            </tr>    
+                        </ng-container>
+                    </tbody>
+                    <tfoot  *ngIf="!footer">
+                        <tr >
+                            <td colspan="13" >
+                        <nz-pagination style="float:right" (nzPageIndexChange)="nextProductPage($event)"  [nzPageIndex]="currentPage" [nzTotal]="totalElements" [nzPageSize]="pageSize" nzSimple></nz-pagination>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </nz-table>
+                <div id="ProductPrint" [style.display]="copyType">
+                    <table>
+                        <tr>
+                            <th> </th>
+                            <ng-container *ngFor="let productName of headerName">                                
+                                <th *ngFor="let release of headerNameArr[productName]">
+                                    {{release.productName}} {{release.version}} <span
+                                    *ngIf="!release.techGuided||!release.genGuided">*</span>
+                                </th>
+                            </ng-container>
+                        </tr>
+                        <tbody>
+                            <tr *ngFor="let p of groupingTable.data">
+                                <td>{{p.versionName}}                                    
+                                    <span *ngIf="!p.techGuided||!p.genGuided">*</span>
+                                </td>
+                                <ng-container *ngFor="let release of p.releases,let i = index">
+                                    <td *ngIf="release.footnotes==undefined" [style.background]="'#d7d7d7'"></td>
+                                    <td *ngIf="release.footnotes!=undefined">
+                                        <span>{{tableTdWords[release.status]}}</span>
+                                    </td>
+                                </ng-container>
+                            </tr>
+                        </tbody>
+                        <tr></tr>
+                    </table>
+                    <span>* This is a legacy release. For more information, please refer to https://lifecycle.vmware.com.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<ngx-loading [show]="isVisible" [config]="{ backdropBorderRadius: '3px'}" [template]="customLoadingTemplate">
+</ngx-loading>

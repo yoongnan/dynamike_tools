@@ -1,0 +1,38 @@
+{
+  "/apidata": {
+    "target": "https://mp-svc.vmware.com/stg-sim",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/apidata": ""
+    }
+  },
+  "/apidataStg": {
+    "target": "https://mp-svc.vmware.com/stg-sim",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/apidata": ""
+    }
+  },
+  "/apidataProd": {
+    "target": "https://mp-svc.vmware.com/prod-sim",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/apidata": ""
+    }
+  },
+  "/apidata1": {
+    "target": "http://172.36.13.212:9000/external/products",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/apidata": ""
+    }
+  }
+}

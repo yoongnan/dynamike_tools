@@ -1,0 +1,58 @@
+<!-- <div class="guide-header" [ngClass]="{'hide': closeGuideHeader}">
+    <div class="topHeader">
+        <i>Welcome to an improved POS System experience.</i>
+
+        <button class="btn btn-primary" id="walkMeId" [disabled]="nu" (click)='onGuide()'>WALK ME</button>
+        <span class="feedback right">
+            <a class="feedback-trigger" href="javascript:void(0);">
+                <button class="btn btn-primary">FEEDBACK</button>
+            </a>
+        </span>
+    </div>
+    <button aria-label="Close" class="close" type="button" (click)='close()'>
+        <i nz-icon nzType="close" nzTheme="outline"></i>
+    </button>
+</div> -->
+
+
+
+    <!-- <div class="guide-header-left">
+        <div class="col-md-4 col-md-offset-4" style="line-height: 2rem;">
+        </div>
+        <div class="col-md-4" class="bannerRight">
+        </div>
+    </div>
+    <div class="guide-header-right">
+    </div> -->
+
+<!-- <nz-layout>      -->
+    <!-- <nz-header> -->
+        <!-- <i
+          class="trigger"
+          nz-icon
+          [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+          (click)="isCollapsed = !isCollapsed"
+        ></i> -->
+        <!-- <app-header></app-header> -->
+      <!-- </nz-header> -->
+    <!-- <nz-header nzCollapsible> -->
+        <app-header></app-header>
+    <!-- </nz-header> -->
+    <nz-layout>
+        <!-- <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzBreakpoint]="'lg'"> -->
+        <!-- <nz-sider nzCollapsible> -->
+        <!-- <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null"> -->
+        <nz-sider nzCollapsible nzBreakpoint="md" [nzCollapsedWidth]="0" [(nzCollapsed)]="isCollapsed">
+            <app-menu>loading</app-menu>
+        </nz-sider>
+        <nz-content>
+            <router-outlet></router-outlet>
+        </nz-content>
+        <!-- <nz-sider>right sidebar</nz-sider> -->
+    </nz-layout>
+    <!-- <nz-footer nzCollapsible> -->
+        <app-footer></app-footer>
+    <!-- </nz-footer> -->
+<!-- </nz-layout> -->
+
+

@@ -1,0 +1,290 @@
+<div class="contain-inter" >
+    <div style="width:100%;display:inline-block;border-bottom: orangered 1px solid;">
+        <h2 style="float:left;"><span>Product 货品</span></h2>
+        <button nz-button nzType="primary" (click)="init()"  ><i nz-icon nzType="reload"></i>Reload</button>
+        <div style="float:right">
+            <nz-button-group nzSize="small" class="tableBut" >
+                <button nzType="primary" title="{{tooltipOne[0]}}" nz-button
+                    (click)="saveProduct()">Save / 保存记录</button>
+                    <!-- [disabled]="tableEmpty" -->
+            </nz-button-group>
+        </div>
+    </div>
+    <!-- <div class="tableShow-area" [style.width]="tableShowWid" [style.overflow]="tableShowOverflow" -->
+    <div class="tableShow-area" [style.width]="tableShowWid" style="height: fit-content;"
+        (scroll)="onScroll($event)"
+        >
+        
+        <!-- <div class="">
+            <nz-alert nzBanner nzMessage="Unselect 'Hide Legacy Releases' to check more interoperability." nzCloseable></nz-alert>
+        </div> -->
+        <style>
+            .displayText{
+                width:200px;
+            }
+            .inputWidth{
+                width:100%;
+            }
+        </style>
+        <div class="tableShow-table">
+            <div style="display: flex;width: 100%;">
+                <div style="width: 100%;">
+                    <label class="displayText">Product Name / 货名 :</label>
+                    <nz-select nzShowSearch class="inputWidth"
+                        [(ngModel)]="item_index"
+                        (ngModelChange)="ItemChange($event)"                    
+                        nzPlaceHolder="Select a Solution">
+                        <!-- [(ngModel)]="item_index"  -->
+                        <ng-container *ngFor="let p of Items; let i = index">Items
+                            <nz-option  *ngIf="!ProductLoadSel" [nzValue]="i" [nzLabel]="p.id + '-' + p.name"></nz-option>
+                        </ng-container>
+                        
+                        <nz-option *ngIf="ProductLoadSel" nzDisabled nzCustomContent>
+                            <i nz-icon nzType="loading" class="loading-icon"></i> Loading Data...
+                        </nz-option>
+                    </nz-select>
+                </div>
+            </div>
+            <div style="width:100%">
+                <div style="display: flex;width: 100%;">                    
+                    <div style="width:100%">
+                        <label class="displayText">Product Type / 货品种类 :</label>
+                        <nz-select nzShowSearch class="inputWidth" #productTypeselect
+                        [(ngModel)]="product_type" (ngModelChange)="ProductTypeChange($event)"
+                            nzPlaceHolder="Select a Product Type">
+                            
+                            <ng-container *ngFor="let p of ProductTypes">
+                                <nz-option *ngIf="!ProductTypeLoadSel" 
+                                [nzValue]="p.id" [nzLabel]="p.description"></nz-option>
+                                
+                                <!-- <ng-select *ngIf="!ProductTypeLoadSel" [items]="p" 
+                                        bindLabel="description" 
+                                        bindValue="id" 
+                                        [(ngModel)]="product_type"> -->
+                            </ng-container>
+                            <nz-option *ngIf="ProductTypeLoadSel" nzDisabled nzCustomContent>
+                                <i nz-icon nzType="loading" class="loading-icon"></i> Loading Data...
+                            </nz-option>
+                        </nz-select>
+                    </div>
+                </div>
+                <div style="display: flex;width: 100%;margin-top: 10px;">
+                    <div style="width:50%">
+                        <label class="displayText">Product Code / 货品代码 :</label>
+                        <input  [(ngModel)]="code" class="inputWidth"/>
+                        <!-- <label for="input_1" class="clr-control-label">Invoice No / 单号码 :</label> -->
+                    </div>
+                    <div style="width:50%">
+                        <label class="displayText">Product Name /  货品名字 :</label>
+                        <input [(ngModel)]="name" class="inputWidth"/>
+                    </div>
+                    <div style="width:50%">
+                        <label class="displayText">BarCode:</label>
+                        <input  [(ngModel)]="barcode" class="inputWidth"/>
+                        <!-- <label for="input_1" class="clr-control-label">Invoice No / 单号码 :</label> -->
+                    </div>
+                </div>
+                <div style="display: flex;width: 100%;margin-top: 10px;">
+                    <div style="width:50%">
+                        <label class="displayText">Unit Cost /  单价 :</label>
+                        <div style="float:right;padding-right:5px">RM<input [(ngModel)]="unit_cost" (change)="setPrice($event)"/></div>
+                    </div>
+                </div>
+                <div style="display: flex;width: 100%;margin-top: 10px;">
+                    <div style="width:50%">
+                        <label class="displayText">Selling Price /  卖价 :</label>
+                        <div style="float:right;padding-right:5px">RM<input [(ngModel)]="selling_price" /></div>
+                    </div>
+                    <div style="width:50%">
+                        <label class="displayText">Market Price /  市场价 :</label>
+                        <div style="float:right;padding-right:5px">RM<input [(ngModel)]="research_price" /></div>
+                    </div>
+                </div>
+                <div style="display: flex;width: 100%;margin-top: 10px;">
+                    <div style="width:50%">
+                        <label class="displayText">Weight (KG) /  重量 （公斤） :</label>
+                        <input [(ngModel)]="weight" class="inputWidth"/>
+                    </div>
+                    <div style="width:50%">
+                        <label class="displayText">Size /  体积 :</label>
+                        <input [(ngModel)]="dimension" class="inputWidth"/>
+                    </div>
+                </div> 
+                
+                <div style="display: flex;width: 100%;margin-top: 10px;">
+                    
+                    <div style="width:50%">
+                        <label class="displayText" style="vertical-align: top;">Description / 内容 :</label>
+                        <textarea rows="10" [(ngModel)]="description" class="inputWidth"></textarea>
+                    </div>
+                    <div class="img-space" style="display:grid; float:right;width:50%" >
+                        <div style="display: flex;">
+                            <label style="height: 30px;line-height: 30px;margin-right: 13px;">Upload Product Picture</label>
+                            <a style="height: 30px;" class="btn btn-danger" (click)="removeImage()" *ngIf="isImageSaved">X</a>
+                        </div>
+                        <ng-container *ngIf="isImageSaved; else elseTemplate">
+                            <img style="width:150px;height:150px" [src]="cardImageBase64" />
+                        </ng-container>
+                        <ng-template #elseTemplate>
+                            <!-- ./../../assets/placeholder.png -->
+                            <img src="" class="img-responsive">
+                        </ng-template>
+                        <div class="form-group">
+                            <fieldset class="form-group">
+                
+                                {{imageError}}
+                                <div class="custom-file fileInputProfileWrap">
+                                    <input [(ngModel)]="filename" type="file" (change)="fileChangeEvent($event)" class="fileInputProfile">
+
+                                </div>
+                            </fieldset>
+                            
+                        </div>
+                        
+                    </div>
+                    
+                </div>   
+            </div>
+            <div >
+                <div style="width:100%;display:inline-block;border-bottom: orangered 1px solid;">
+                    <h3 style="float:left;"><span>Supplier 供应商</span></h3>
+                    <div style="float:right">
+                        <nz-button-group nzSize="small" class="tableBut" >
+                            <button nzType="primary" title="{{tooltipOne[0]}}" nz-button
+                                (click)="saveSupplier()">Add Supplier / 加供应商</button>
+                        </nz-button-group>
+                    </div>
+                </div>
+                <!-- padding: 20px 10px 20px 10px; -->
+                <div style="display: flex;width: 100%;">
+                    <div style="width: 100%;">
+                        <label class="displayText">Supplier / 供应商 ：</label>
+                        <nz-select nzShowSearch class="inputWidth"
+                        [(ngModel)]="supplier_index" (ngModelChange)="SupplierChange($event)"                            
+                            nzPlaceHolder="Select a Supplier">
+                            <ng-container *ngFor="let p of Suppliers, let i = index">
+                                <nz-option *ngIf="!SupplierLoadSel" [nzValue]="i" [nzLabel]="p.name"></nz-option>
+                            </ng-container>
+                            <nz-option *ngIf="SupplierLoadSel" nzDisabled nzCustomContent>
+                                <i nz-icon nzType="loading" class="loading-icon"></i> Loading Data...
+                            </nz-option>
+                        </nz-select>
+                    </div>
+                </div>
+                <div style="display: flex;width: 100%;margin-top: 10px;">
+                    <div style="width:50%">
+                        <label class="displayText">Supplier Name / 供应商名：</label>
+                        <input [(ngModel)]="supplier_name" class="inputWidth" />
+                    </div>
+                    <div style="width:50%">
+                        <label class="displayText">SSM / 注册号码：</label>
+                        <input [(ngModel)]="ssm" class="inputWidth" />
+                    </div>
+                </div>                
+            </div>
+            
+            <div class="butArea" style="border: 2px solid grey;  margin-top: 10px;">
+                <div class="divBut">
+                    <nz-button-group nzSize="small" class="tableBut">
+                        <button nzType="primary" title="{{tooltipOne[0]}}" nz-button [disabled]="tableEmpty"
+                            (click)="printLink()">Print</button>
+                        <button nzType="primary" title="{{tooltipOne[1]}}" nz-button [disabled]="tableEmpty"
+                            (click)="CSVlink()">CSV</button>
+                        <button nzType="primary" title="{{tooltipOne[2]}}" nz-button [disabled]="tableEmpty"
+                            (click)="copyClick()">Copy</button>
+                    </nz-button-group>
+                </div>
+                <div [style.height]="'30px'" class="tableTop">
+                    <div class="thLeft" style="width:100%">
+                        <a class="columns" style="pointer-events: auto;"
+                            [ngStyle]="{'cursor':tableEmpty?'not-allowed':''}" nz-dropdown [nzDisabled]="tableEmpty"
+                            nzTrigger="click" [nzDropdownMenu]="menu">
+                            <span>
+                                Hide Columns
+                            </span>
+                        </a>
+                        <nz-dropdown-menu #menu="nzDropdownMenu">
+                            <div class="dropDownCls">
+                                <div class="Down-header">Show Columns</div>
+                                <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="unCheck($event)">
+                                    <div nz-row>
+                                        <div *ngFor="let i of ShowColumnData" nz-col nzSpan="24"><label nz-checkbox
+                                                [nzValue]="i" [nzDisabled]="i.disabled"
+                                                [ngModel]="i.checked">{{i.name}}</label></div>
+                                    </div>
+                                </nz-checkbox-wrapper>
+                            </div>
+                        </nz-dropdown-menu>
+                    </div>
+                </div>
+                <nz-table #groupingTable id="PurchaseTable" [nzData]="productListData" nzBordered nzSize="small"
+                    nzHideOnSinglePage="true" [nzFrontPagination]="false" [nzNoResult]="emptyTemplate">
+                    <ng-template #emptyTemplate>
+                        <tr>
+                            <nz-empty *ngIf="NoResultId=='No Data'" nzNotFoundImage="simple"></nz-empty>
+                            <nz-empty *ngIf="NoResultId=='No Result'" nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                                [nzNotFoundContent]="contentTpl">
+                                <ng-template #contentTpl>
+                                    <span> {{NoResultId}} </span>
+                                </ng-template>
+                            </nz-empty>
+                        </tr>
+                    </ng-template>
+                    <thead>
+                        <tr>
+                            <th nzLeft class="firstTh" style="text-align: center;top: 54px;z-index: 20;">
+                                </th> 
+                            <ng-container *ngFor="let i of prices">  
+                                
+                            <th nzLeft class="firstTh" style="text-align: center;top: 54px;z-index: 20;">
+                                {{i}}</th>                                
+                            </ng-container>
+                           
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr >
+                            <td>Price List in MYR</td>
+                            <ng-container *ngFor="let i of prices_value">  
+                                
+                                    <td>{{i}}</td>
+                                                             
+                            </ng-container>
+                        </tr>                        
+
+                    </tbody>
+                </nz-table>
+                <div id="PurchasePrint" [style.display]="copyType">
+                    <table>
+                        <tr>
+                            <th> </th>
+                            <ng-container *ngFor="let productName of headerName">                                
+                                <th *ngFor="let release of headerNameArr[productName]">
+                                    {{release.productName}} {{release.version}} <span
+                                    *ngIf="!release.techGuided||!release.genGuided">*</span>
+                                </th>
+                            </ng-container>
+                        </tr>
+                        <tbody>
+                            <tr *ngFor="let p of groupingTable.data">
+                                <td>{{p.versionName}}                                    
+                                    <span *ngIf="!p.techGuided||!p.genGuided">*</span>
+                                </td>
+                                <ng-container *ngFor="let release of p.releases,let i = index">
+                                    <td *ngIf="release.footnotes==undefined" [style.background]="'#d7d7d7'"></td>
+                                    <td *ngIf="release.footnotes!=undefined">
+                                        <span>{{tableTdWords[release.status]}}</span>
+                                    </td>
+                                </ng-container>
+                            </tr>
+                        </tbody>
+                        <tr></tr>
+                    </table>
+                    <span>* This is a legacy release. For more information, please refer to https://lifecycle.vmware.com.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<ngx-loading [show]="isVisible" [config]="{ backdropBorderRadius: '3px'}" [template]="customLoadingTemplate">
+</ngx-loading>
