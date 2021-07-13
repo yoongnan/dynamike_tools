@@ -26,16 +26,16 @@ cordova run android --no-native-run
 cordova emulate android
 
 Install cordova and build apk
-++++++++++++++++++++++++++++++
+=======================
 npm install -g cordova
 ng build --aot
 cordova build android
 
 Debug Android App
-+++++++++++++++++++++
+=======================
 cordova run android --debug --target=YOURDEVICEIDHER
 chrome://inspect/#devices
 
 Release Android App
-+++++++++++++++++++++
+=======================
 cordova build --release android
