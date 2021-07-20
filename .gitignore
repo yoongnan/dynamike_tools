@@ -1,3 +1,5 @@
 # Compiled class file
 *node_modules/*
 *www/*
+*plugins/*
+*platforms/*

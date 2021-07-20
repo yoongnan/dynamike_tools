@@ -28,6 +28,7 @@ export class AppComponent {
   ngOnInit() {    
     if(window.screen.width>=600){
       this.mobile = false;
+      this.elementRef.nativeElement.querySelector('.contain-inter').style.height = "calc(100vh - 166px)";
     }
     // this.introSetoptions();
     // this.feedbackService.showFeedback();

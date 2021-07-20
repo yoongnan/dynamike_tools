@@ -6,10 +6,27 @@
   <meta charset="utf-8" />
   <meta name="format-detection" content="telephone=no" />
   <meta name="msapplication-tap-highlight" content="no" />
-  <!-- <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" /> -->
-  <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=medium-dpi" />
-  <!-- <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, height=device-height" /> -->
-  
+  <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, min-width=device-width, min-height=device-height, target-densitydpi=device-dpi" />
+  <!-- <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=medium-dpi" /> -->
+  <!-- <meta name="viewport" content=" initial-scale=1, maximum-scale=1, minimum-scale=1, min-height=device-height" /> -->
+  <!-- <meta name="viewport" content="width=device-width, initial-scale=1, min-height=600"> -->
+  <!-- <meta id="Viewport" name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, height:1000"> -->
+
+<!-- <script type="text/javascript">
+$(function(){
+// if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+  var wh = ( $(window).width() < window.screen.height ) ? $(window).height() : window.screen.height; //get proper height
+  var ww = ( $(window).width() < window.screen.width ) ? $(window).width() : window.screen.width; //get proper width
+  var mw = 480; // min width of site
+  var ratio =  ww / mw; //calculate ratio
+  if( ww < mw){ //smaller than minimum size
+   $('#Viewport').attr('content', 'initial-scale=' + ratio + ', maximum-scale=' + ratio + ', minimum-scale=' + ratio + ', user-scalable=yes, width=' + ww + ', height=' + wh);
+  }else{ //regular size
+   $('#Viewport').attr('content', 'initial-scale=1.0, maximum-scale=2, minimum-scale=1.0, user-scalable=yes, width=' + ww + ', height=' + wh);
+  }
+// }
+});
+</script> -->
   <title>DYNAMIKE POS System</title>
   <base href="./">
   <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->

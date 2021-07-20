@@ -8,7 +8,7 @@ body {
     padding: 0 !important;
     position: relative;
     // min-width: 1280px;
-    min-width: fit-content;
+    // min-width: fit-content;
     // width: 100%;
 }
 * {
@@ -24,7 +24,7 @@ body {
     // position: relative;
 }
 .ant-layout {
-    display: inline-flex;
+    // display: inline-flex;
 }
 // .ant-select-item-option-content {
 //     flex: auto;
@@ -38,4 +38,7 @@ body {
 
 .ant-page-header {
     padding:0px;
+}
+.ant-list-item-action>li {
+    cursor:auto;
 }

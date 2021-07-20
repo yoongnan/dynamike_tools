@@ -36,9 +36,8 @@
                             (click)="searchProduct()">Search / 寻找记录</button>
                 </ng-template>
                 </nz-form-item>
-                <nz-form-item style="flex-direction: column;
-                flex-wrap: wrap;">
-                    <nz-form-label  nzFor="product_type" >Product Type / 货品种类</nz-form-label>
+                <nz-form-item >
+                    <nz-form-label  nzFor="product_type" style="float:left">Product Type / 货品种类</nz-form-label>
                     <nz-form-control [nzSpan]="12" nzErrorTip="Please select a product type!">
                       <nz-select
                       #productTypeselect
@@ -74,7 +73,97 @@
             </nz-button-group>
         </div>
     </div>
-    <div class="tableShow-area" [style.width]="tableShowWid"  style="height: fit-content;"
+    
+    <nz-list class="listShow-area" nzItemLayout="vertical" style="background-color: white;">
+        <nz-list-item *ngFor="let p of ProductData, let j = index">
+            
+            <nz-list-item-extra>
+                <img width="272" style="width:100px;height:100px"  [src]="formatImage(p.image)" />
+                <ul nz-list-item-actions>
+                    <nz-list-item-action><a (click)="updateProduct(j)">edit</a></nz-list-item-action>
+                    <!-- <nz-list-item-action><a (click)="edit(j)">more</a></nz-list-item-action> -->
+                  </ul>
+            </nz-list-item-extra>
+          <nz-list-item-meta>
+            <!-- <nz-list-item-meta-avatar [nzSrc]="formatImage(p.image)"></nz-list-item-meta-avatar> -->
+            <nz-list-item-meta-title>
+              <a href="{{ p.name }}">{{ p.id }}</a>
+            </nz-list-item-meta-title>
+            <nz-list-item-meta-description>
+                {{p.code}} - {{ p.name }}
+            </nz-list-item-meta-description>
+          </nz-list-item-meta> 
+          <ul nz-list-item-actions>
+            <ng-container *ngFor="let header of headerData, let i = index" >
+                <nz-list-item-action *ngIf="i>2 && i<=5">
+                    <!-- <i nz-icon nzType="star-o" style="margin-right: 8px;"></i> -->
+                    {{header}}
+                    <label class="trDisplayLabel{{j}}">{{ p[productDolumnData[i]] }}</label>
+                    <input  *ngIf="i==2" style="display:none" class="trEditLabel{{j}}" (change)="setPrice(j)"  [(ngModel)]="p[productDolumnData[i]]" style="padding: 0 16px;" />
+                    <input *ngIf="i==3"  style="display:none" class="trEditLabel{{j}}" (change)="calTotalStock(j)"  [(ngModel)]="p[productDolumnData[i]]" />
+                    <input *ngIf="i>3"  style="display:none" class="trEditLabel{{j}}"   [(ngModel)]="p[productDolumnData[i]]" />
+                </nz-list-item-action>
+                <nz-list-item-action *ngIf="i>5">
+                    <!-- <i nz-icon nzType="star-o" style="margin-right: 8px;"></i> -->
+                    {{header}}
+                    <label class="trDisplayLabel{{j}}">{{ p.item[productDolumnData[i]] }}</label>
+                    <input  style="display:none" class="trEditLabel{{j}}" [(ngModel)]="p.item[productDolumnData[i]]" />
+                </nz-list-item-action>
+            </ng-container> 
+            <!-- <nz-list-item-action> -->
+              <!-- <i nz-icon nzType="star-o" style="margin-right: 8px;"></i> -->
+              <!-- <label>Qty</label>
+              156 -->
+            <!-- </nz-list-item-action> -->
+            <!-- <nz-list-item-action>
+              <i nz-icon nzType="star-o" style="margin-right: 8px;"></i>
+              156
+            </nz-list-item-action>
+            <nz-list-item-action>
+              <i nz-icon nzType="star-o" style="margin-right: 8px;"></i>
+              2
+            </nz-list-item-action> -->
+          </ul>
+        </nz-list-item>
+        <style>
+            .loadmore {
+                text-align: center;
+                margin-top: 12px;
+                height: 32px;
+                line-height: 32px;
+                
+            }
+            .loadmore button {
+                    line-height: 1.5715;
+                    position: relative;
+                    display: inline-block;
+                    font-weight: 400;
+                    white-space: nowrap;
+                    text-align: center;
+                    background-image: none;
+                    box-shadow: 0 2px 0 rgb(0 0 0 / 2%);
+                    cursor: pointer;
+                    transition: all .3s cubic-bezier(.645,.045,.355,1);
+                    -webkit-user-select: none;
+                    -moz-user-select: none;
+                    -ms-user-select: none;
+                    user-select: none;
+                    touch-action: manipulation;
+                    height: 32px;
+                    padding: 4px 15px;
+                    font-size: 14px;
+                    border-radius: 2px;
+                    color: rgba(0,0,0,.85);
+                    background: #fff;
+                    border: 1px solid #d9d9d9;
+            }
+            
+        </style>
+        <div class="loadmore" *ngIf="!loadingMore" nz-list-load-more>
+            <button nz-button  (click)="onLoadMore()">loading more</button>
+        </div>
+      </nz-list>
+    <div class="tableShow-area" [style.width]="tableShowWid"  style="height: fit-content"
         (scroll)="onScroll($event)">
         <!-- <div class="">
             <nz-alert nzBanner nzMessage="Unselect 'Hide Legacy Releases' to check more interoperability." nzCloseable></nz-alert>

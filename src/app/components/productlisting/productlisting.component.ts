@@ -172,6 +172,11 @@ export class ProductListingComponent implements OnInit {
             this.totalElements = data["totalElements"];
             console.log(data);
             this.pageSize = data["pageable"]['pageSize'];
+            if(this.totalPage > this.currentPage){
+              this.loadingMore = false;
+            }else{
+              this.loadingMore = true;
+            }
           },
           msg => { // Error
             this.common.createModalMessage(msg.error.error, msg.error.message).error()
@@ -284,6 +289,7 @@ export class ProductListingComponent implements OnInit {
     return moment(min).format('yyyy-MM-DD')
   }
 
+  
   @HostListener('window:scroll', ['$event'])
   scrollTop: number = 0;
   onScroll(s) {
@@ -302,18 +308,10 @@ export class ProductListingComponent implements OnInit {
     // }
   }
 
-  //highLight
-  tdSelected: any;
-  tdMouseOver(i) {
-    this.tdSelected = i;
-  }
-
-  tdMouseOut() {
-    this.tdSelected = "131355";
-  }
-
+  loadingMore = true;
   Other ="Other / 其他";
-  headerData : any[] = [""," Code / 代号","Name / 货名","Unit Cost / 进货价", "Inventory / 存货","Total Amount / 货钱","Unit Price / 卖价",
+  productDolumnData : any[] =['','code','name','unitCost','stock','totalStock','sellingPrice'];
+  headerData : any[] = ["","Code / 代号","Name / 货名","Unit Cost / 进货价", "Inventory / 存货","Total Amount / 货钱","Unit Price / 卖价",
   // "50%",
   // "45%","40%","35%","30%","25%","20%","15%",
   // "10%",
@@ -326,6 +324,34 @@ export class ProductListingComponent implements OnInit {
   "Weight / 重量","Size / 体积","Market / 市场价"
   // ,"Action / 操作"
   ];
+  onLoadMore(){
+    // this.loadingMore = true;
+    // this.ProductData = this.data.concat([...Array(count)].fill({}).map(() => ({ loading: true, name: {} })));
+    let promise = new Promise((resolve, reject) => {
+      this.dcrService.getPOSProductbyType(this.product_type,this.currentPage,this.pageSize)
+        .toPromise()
+        .then(
+          data => { // Success
+            this.footer = false;
+            Array.prototype.push.apply(this.ProductData,data["content"]);
+            // this.ProductData = data["content"];
+            this.currentPage = data['pageable']['pageNumber']; 
+            this.currentPage +=1;
+            this.totalPage = data["totalPages"];
+            this.totalElements = data["totalElements"];
+            this.pageSize = data["pageable"]['pageSize'];            
+            if(this.totalPage > this.currentPage){
+              this.loadingMore = false;
+            }else{
+              this.loadingMore = true;
+            }
+          },
+          msg => { // Error
+            this.common.createModalMessage(msg.error.error, msg.error.message).error()
+          }
+        );
+    });
+  }
   nextProductPage(value){
     console.log("nextPage:"+value);
     if(value != this.currentPage){
