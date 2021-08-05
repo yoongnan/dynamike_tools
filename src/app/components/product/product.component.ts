@@ -315,6 +315,7 @@ export class ProductComponent implements OnInit {
     supplier_name:any;
     invoice_no : any;
     barcode= "";
+    product_id = "";
     code= "";
     name= "";
     product_type:any;
@@ -339,7 +340,7 @@ export class ProductComponent implements OnInit {
     old_images:any;
     saveProduct(){
       let product: any = {
-        "id": this.code,
+        "id": this.product_id,
         "name": this.name,
         "type": this.product_type,
         "stock": this.stock,
@@ -355,7 +356,7 @@ export class ProductComponent implements OnInit {
         "item":[]
       } 
       let item: any = {
-        "id": this.code,
+        "id": this.product_id,
         // "product":[],
         "priceType": this.price_type,
         "sellingPrice": parseFloat(this.selling_price).toFixed(2),
@@ -404,7 +405,7 @@ export class ProductComponent implements OnInit {
       }else{
         this.Items[this.old_images].supplier = product.supplier;
         this.Items[this.old_images].item = product.item;
-        this.Items[this.old_images].id = product.code;
+        this.Items[this.old_images].id = product.id;
         this.Items[this.old_images].name = product.name;
         this.Items[this.old_images].type = product.type;
         this.Items[this.old_images].stock = product.stock;
@@ -579,11 +580,11 @@ export class ProductComponent implements OnInit {
   selectedItem:any;
   ItemChange(value) {
     this.product_type=null;
-    this.code= this.Items[value].id;
+    this.product_id= this.Items[value].id;
     
 
     let promise = new Promise((resolve, reject) => {
-      this.dcrService.getPOSProductbyId(this.code)
+      this.dcrService.getPOSProductbyId(this.product_id)
         .toPromise()
         .then(
           data => { // Success
@@ -612,6 +613,7 @@ export class ProductComponent implements OnInit {
       this.dimension= this.Items[value].dimension;
       this.total_stock= this.Items[value].totalStock;
       this.barcode = this.selectedItem[0].barCode;
+      this.code = this.selectedItem[0].code;
       this.Items[value].image = this.selectedItem[0].image;
       this.old_images = value;
         if(this.Items[value].image){
@@ -670,6 +672,7 @@ this.prices_value = [this.price_50.toFixed(2),this.price_45.toFixed(2),this.pric
     this.supplier_id = null;
     this.supplier_name=null;
     this.invoice_no=null;
+    this.product_id=null;
     this.code=null;
     this.name=null;
     this.product_type=null;

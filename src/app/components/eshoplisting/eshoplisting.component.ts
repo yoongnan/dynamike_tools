@@ -303,6 +303,7 @@ export class EshopListingComponent implements OnInit {
     //     this.common.errStatus(error.status, error.error);
     //   }
     // })
+    this.invoiceId = this.Payments[value].orderId;
     let promise_1 = new Promise((resolve, reject) => {
       this.dcrService.getPOSOrderItems(this.Payments[value].orderId)
         .toPromise()
@@ -419,18 +420,20 @@ export class EshopListingComponent implements OnInit {
 
   
   ItemChange(value) {
-    console.log(this.Items);
     this.item_code = this.Items[value].code;
     this.item_name = this.Items[value].name;
+    this.item_unit_cost = this.Items[value].unit_cost;
   }
 
   Products:any;
   item_index:any;
   item_code:any;
+  invoiceId:any;
   item_name:any;
   item_quantity:any;
   item_unit_cost:any;
   item_amount:any;
+  item_sellingPrice:any;
   searchProduct(){
     let promise = new Promise((resolve, reject) => {
       this.dcrService.getPOSProductbyId(this.item_code)
@@ -475,25 +478,30 @@ export class EshopListingComponent implements OnInit {
     //   }
     // })
   }
-  addItems(product_code,quantity){
-    console.log(this.OrderItems);
+  addItems(product_code,quantity,invoiceId,item_unit_cost,item_sellingPrice){
     // ,amount
     let order_item: any = {
-      "invoiceId":this.OrderItems[0].invoiceId,
+      "invoiceId":invoiceId,
       // "itemName": this.item_name,
       "itemId": product_code,
       "quantity": quantity,
-      "unitPrice":0.00,
-      "totalPrice":0.00
+      "unitPrice":item_unit_cost,
+      "sellingPrice":item_sellingPrice,
+      "totalPrice":(quantity* item_unit_cost)
     } 
     this.OrderItems.push(order_item);
     this.item_index = null;
     this.item_code = null;
+    this.item_unit_cost = null;
     this.item_quantity = null;
     this.item_name = null;
+    this.item_sellingPrice = null;
   }
   deleteItem(index){
     this.OrderItems.splice(index,1);
+    if(this.OrderItems.length==0){
+      this.OrderItems=null;  
+    }
   }
   
   updateTransactionItem(){

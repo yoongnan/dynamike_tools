@@ -43,6 +43,11 @@
                 </div>
                 <div style="display: flex;width: 100%;margin-top: 10px;">
                     <div style="width:50%">
+                        <label class="displayText">Product Id / 货品 :</label>
+                        <input  [(ngModel)]="product_id" class="inputWidth"/>
+                        <!-- <label for="input_1" class="clr-control-label">Invoice No / 单号码 :</label> -->
+                    </div>
+                    <div style="width:50%">
                         <label class="displayText">Product Code / 货品代码 :</label>
                         <input  [(ngModel)]="code" class="inputWidth"/>
                         <!-- <label for="input_1" class="clr-control-label">Invoice No / 单号码 :</label> -->
@@ -50,6 +55,11 @@
                     <div style="width:50%">
                         <label class="displayText">Product Name /  货品名字 :</label>
                         <input [(ngModel)]="name" class="inputWidth"/>
+                    </div>
+                    <div style="width:50%">
+                        <label class="displayText">BarCode:</label>
+                        <input  [(ngModel)]="barcode" class="inputWidth"/>
+                        <!-- <label for="input_1" class="clr-control-label">Invoice No / 单号码 :</label> -->
                     </div>
                 </div>
                 <div style="display: flex;width: 100%;margin-top: 10px;">

@@ -277,6 +277,32 @@ export class DcrService {
     return this.http.request(req);
   }
   
+  public getStockCheckDate(year,month){
+    var header = {};
+    var url = `${this.environmentsService.config.posServiceUrl}`;
+    url+=`/stockcheckdate?`;
+    if(month){
+        url +=`month=${month}&year=${year}`;
+    }else{
+      url +=`year=${year}`;
+    }
+    
+    return this.http.get(url, header);
+    
+  }
+
+  public getStockCheckListing(params): Observable<HttpEvent<any>> {
+    
+    var header = {};
+    var url = `${this.environmentsService.config.posServiceUrl}`;
+    // header = { "headers": {
+    //   'Content-Type': 'application/json'
+    //   }};
+    const req = new HttpRequest('GET', `${url}/stockchecklist?date=${params}`,header);
+
+    return this.http.request(req);
+  }
+
   public runCheckStock(params): Observable<HttpEvent<any>> {
     
     var header = {};
@@ -371,12 +397,13 @@ export class DcrService {
     return this.http.request(req);
   }
 
-  public quickUpload(params): Observable<HttpEvent<any>> {
+  public quickUpload(params,update=true): Observable<HttpEvent<any>> {
     
     var header = {};
     var url = `${this.environmentsService.config.posServiceUrl}`;
     const formData: FormData = new FormData();
     formData.append('group_data', JSON.stringify(params));
+    formData.append('update', JSON.stringify(update));
     // const req = new HttpRequest('POST', `${this.baseUrl}/products`, formData, {
     //   reportProgress: true,
     //   responseType: 'json'
@@ -439,13 +466,14 @@ export class DcrService {
 
     return this.http.request(req);
   }
-  public upload(params,file: File): Observable<HttpEvent<any>> {
+  public upload(params,file: File,update=true): Observable<HttpEvent<any>> {
     
     var header = {};
     var url = `${this.environmentsService.config.posServiceUrl}`;
     const formData: FormData = new FormData();
     formData.append('file', file);
     formData.append('group_data', JSON.stringify(params));
+    formData.append('update', JSON.stringify(update));
     // const req = new HttpRequest('POST', `${this.baseUrl}/products`, formData, {
     //   reportProgress: true,
     //   responseType: 'json'
@@ -466,7 +494,11 @@ export class DcrService {
     return this.http.get(url + `/clients`, header);
   }
   
-  
+  public getPOSSummaryMonthlyReport(year){
+    var header = {};
+    var url = `${this.environmentsService.config.posServiceUrl}`;
+    return this.http.get(url + `/summaryMonthlyreport?years=${year}`, header);
+  }
   public getPOSMonthlyReport(year){
     var header = {};
     var url = `${this.environmentsService.config.posServiceUrl}`;
@@ -673,6 +705,17 @@ export class DcrService {
   }
 
   
+
+  public getPOSExpiredListing(year,month){
+    var header = {};
+    var url = `${this.environmentsService.config.posServiceUrl}`;
+    url+=`/expiredList?`;
+    if(year && month){
+      url +=`month=${month}&year=${year}`;
+    }
+    
+    return this.http.get(url, header);
+  }
 
   public getPOSExpiredCheck(code){
     var header = {};

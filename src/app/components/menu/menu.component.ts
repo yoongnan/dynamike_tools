@@ -49,6 +49,9 @@ export class MenuComponent implements OnInit {
       { "name": "Stock Tick / 点货", "link": "/StockTick" },
       { "name": "CashFlow 现金流动", "link": "/CashFlow" },
       { "name": "Expired 货品过期", "link": "/Expired" },
+      { "name": "Goods Price 货品本钱记录", "link": "/GoodsPrice" },
+      { "name": "Old Summary Report", "link": "/SummaryBackup" },
+      { "name": "Stock Check Listing", "link": "/StockCheckListing" },
       
     ]
 
@@ -94,9 +97,15 @@ export class MenuComponent implements OnInit {
       this.Selected = 19;
     }  else if (this.router.url.includes("/CashFlow")) {
       this.Selected = 20;
-    }    else if (this.router.url.includes("/Expried")) {
+    }  else if (this.router.url.includes("/Expried")) {
       this.Selected = 21;
-    }   
+    }  else if (this.router.url.includes("/GoodsPrice")) {
+      this.Selected = 22;
+    }  else if (this.router.url.includes("/SummaryBackup")) {
+      this.Selected = 23;
+    }  else if (this.router.url.includes("/StockCheckListing")) {
+      this.Selected = 24;
+    }  
     this.common.setItem("tabNu", this.Selected);
   }
 
@@ -199,6 +208,18 @@ export class MenuComponent implements OnInit {
       }
       case 21: {
         this.common.getItem("hashTab22") == undefined ? this.router.navigateByUrl(`/Expired`) : window.location.hash = this.common.getItem("hashTab22");
+        break;
+      }
+      case 22: {
+        this.common.getItem("hashTab23") == undefined ? this.router.navigateByUrl(`/GoodsPrice`) : window.location.hash = this.common.getItem("hashTab23");
+        break;
+      }
+      case 23: {
+        this.common.getItem("hashTab24") == undefined ? this.router.navigateByUrl(`/SummaryBackup`) : window.location.hash = this.common.getItem("hashTab24");
+        break;
+      }
+      case 24: {
+        this.common.getItem("hashTab25") == undefined ? this.router.navigateByUrl(`/StockCheckListing`) : window.location.hash = this.common.getItem("hashTab25");
         break;
       }
     }

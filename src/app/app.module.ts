@@ -45,7 +45,9 @@ import { StockTickComponent } from './components/stock_tick/stock_tick.component
 import { StockCheckComponent } from './components/stock_check/stock_check.component';
 import { CashFlowComponent } from './components/cashflow/cashflow.component';
 import { ExpiredListComponent } from './components/expired_listing/expired_listing.component';
-
+import { GoodsPriceListComponent } from './components/goods_price_listing/goods_price_listing.component';
+import { SummaryReportBackupComponent } from './components/summaryreport_back_up/summaryreport.component';
+import { StockCheckListComponent } from './components/stock_check_listing/stock_check.component';
 
 import { NgxLoadingModule } from 'ngx-loading';
 
@@ -85,7 +87,10 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
     StockTickComponent,
     StockCheckComponent,
     CashFlowComponent,
-    ExpiredListComponent
+    ExpiredListComponent,
+    GoodsPriceListComponent,
+    SummaryReportBackupComponent,
+    StockCheckListComponent
 
   ],
   imports: [

@@ -1,7 +1,35 @@
 <div id="ListingModal" class="contain-inter">
-    <div style="width:100%;display:inline-block;border-bottom: orangered 1px solid;">
+    <div style="width:100%;display:inline-block;border-bottom: orangered 1px solid;">        
         
-        
+        <!-- <nz-tree
+        nzBlockNode
+        [nzData]="nodes"
+        (nzClick)="activeNode($event)"
+        (nzDblClick)="openFolder($event)"
+        [nzTreeTemplate]="nzTreeTemplate"
+      ></nz-tree>
+      <ng-template #nzTreeTemplate let-node let-origin="origin">
+        <span class="custom-node">
+          <span *ngIf="!node.isLeaf" (contextmenu)="contextMenu($event, menu)">
+            <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" (click)="openFolder(node)"></i>
+            <span class="folder-name">{{ node.title }}</span>
+            <span class="folder-desc">created by {{ origin.author | lowercase }}</span>
+          </span>
+          <span *ngIf="node.isLeaf" (contextmenu)="contextMenu($event, menu)">
+          <span>
+            <i nz-icon nzType="file"></i>
+            <span class="file-name">{{node.title}}</span>
+            <span class="file-desc">modified by {{ origin.author | lowercase }}</span>
+          </span>
+        </span>
+      </ng-template>
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu>
+          <li nz-menu-item (click)="selectDropdown()">Action 1</li>
+          <li nz-menu-item (click)="selectDropdown()">Action 2</li>
+        </ul>
+      </nz-dropdown-menu> -->
+
         <h2 style="float:left;"><span>Purchase Order 进货单</span></h2>
         <div style="display: inline;margin-left:250px">                    
             <div style="width:100%">

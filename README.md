@@ -39,3 +39,22 @@ chrome://inspect/#devices
 Release Android App
 =======================
 cordova build --release android
+
+
+Configure for Desktop apps
+==========================
+refer this link https://fireship.io/lessons/desktop-apps-with-electron-and-angular/
+npm install electron --save-dev
+
+packing as exe file
+====================
+npm install electron-packager -g
+npm install electron-packager --save-dev
+
+window apps
+===========
+electron-packager . --platform=win32
+
+Mac apps
+===========
+electron-packager . --platform=darwin

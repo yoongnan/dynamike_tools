@@ -246,7 +246,7 @@
             <div style="float:right">
                 <nz-button-group nzSize="small" class="tableBut" >
                     <button nzType="primary" title="{{tooltipOne[0]}}" nz-button 
-                    (click)="addItems(item_code,item_quantity)">Add Item</button>
+                    (click)="addItems(item_code,item_quantity,invoiceId,item_unit_cost,item_sellingPrice)">Add Item</button>
                 </nz-button-group>
             </div>
         </div>
@@ -281,6 +281,10 @@
                 <label class="displayText">Quantity / 数量 ：</label>
                 <input  class="inputWidth" [(ngModel)]="item_quantity" />
             </div>
+            <div style="width:50%">
+                <label class="displayText">Selling Price / 卖价 ：</label>
+                <input  class="inputWidth" [(ngModel)]="item_sellingPrice" />
+            </div>
             <div >
                 
             </div>
@@ -291,7 +295,8 @@
     <thead>
         <tr>            
             <th>Item Id</th>
-            <th>Unit Quantity</th>
+            <th>Quantity</th>
+            <th>Selling Price</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -300,6 +305,7 @@
             <tr *ngFor="let p of OrderItems, let i = index">
                 <td>{{p.itemId}}</td>
                 <td>{{p.quantity}}</td>
+                <td>{{p.sellingPrice}}</td>
                 <td>
                     <button nzType="primary" nz-button 
                     (click)="deleteItem(i)">Delete</button>

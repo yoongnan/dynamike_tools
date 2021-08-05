@@ -14,11 +14,11 @@ import { Console } from 'console';
 
 
 @Component({
-  selector: 'app-expired_listing',
-  templateUrl: './expired_listing.component.html',
-  styleUrls: ['./expired_listing.component.scss']
+  selector: 'app-goods_price_listing',
+  templateUrl: './goods_price_listing.component.html',
+  styleUrls: ['./goods_price_listing.component.scss']
 })
-export class ExpiredListComponent implements OnInit {
+export class GoodsPriceListComponent implements OnInit {
   ShowColumnData: any[];
   ShowColumn: string[] = [];
   tableShowOverflow: string;
@@ -164,7 +164,7 @@ export class ExpiredListComponent implements OnInit {
   {"id":11,"value":"November 十一月"},
   {"id":12,"value":"December 十二月"}]
   // headerdate = ["","Product Code /货品","Quantity / 数量","Expired / 过期","Date / 日期","Suppiler / 供应商", "Detail / 记录"];
-  headerdate = ["","Purchase Id","Date / 日期","Suppiler / 供应商","Invoice Id / 进货单号码","Quantity / 数量","Expired / 过期", "Detail / 记录"];
+  headerdate = ["","Purchase Id","Date / 日期","Unit Cost / 本钱","Suppiler / 供应商","Invoice Id / 进货单号码","Quantity / 数量","Expired / 过期", "Detail / 记录"];
 
   All ="All / 全部";
   Purchases :any;

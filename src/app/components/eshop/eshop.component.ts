@@ -180,7 +180,7 @@ export class EshopComponent implements OnInit {
   }
 
   Provider : any;
-  order_product = ["Product Code / 代号","Quantity / 数量","Delete / 删除"];
+  order_product = ["Product Code / 代号","Quantity / 数量","Selling Price / 卖价","Delete / 删除"];
   date : any = "2021-04-18";
   client_id :any;
   invoice_no : any;
@@ -303,23 +303,30 @@ export class EshopComponent implements OnInit {
   item_name:any;
   item_quantity:any;
   item_unit_cost:any;
+  item_sellingPrice:any;
   item_amount:any;
-  addItems(product_code,quantity){
+  OrderItems:any[];
+  addItems(product_code,quantity,item_unit_cost,item_sellingPrice){
     // ,amount
     let order_item: any = {
       "invoiceId":this.orderId,
-      // "itemName": this.item_name,
+      "itemName": this.item_name,
       "itemId": product_code,
       "quantity": quantity,
-      "unitPrice":0.00,
-      "totalPrice":0.00
+      "unitPrice":item_unit_cost,
+      "sellingPrice":item_sellingPrice,
+      "totalPrice":(quantity* item_unit_cost)
     } 
-    console.log(order_item);
+    if(!this.OrderItems){
+      this.OrderItems = [];
+      this.OrderItems.push(order_item);
+    }
     this.order_items.order_item.push(order_item);
-    
   }
 
   reset(){
+    this.item_sellingPrice = null;
+    this.OrderItems = null;
     this.order_items= { "order_item": []};
     this.client_index=null;
     this.client_name=null;
@@ -343,6 +350,10 @@ export class EshopComponent implements OnInit {
     console.log(this.paymentDue);
   }
   deleteItem(index){
+    this.OrderItems.splice(index,1);    
+    if(this.OrderItems.length==0){
+      this.OrderItems=null;  
+    }
     this.order_items.order_item.splice(index,1);
   }
 

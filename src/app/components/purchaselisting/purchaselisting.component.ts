@@ -13,6 +13,9 @@ import { AnyTxtRecord } from 'dns';
 import { Console } from 'console';
 
 
+import { NzFormatEmitEvent, NzTreeNode } from 'ng-zorro-antd/tree';
+import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
+
 @Component({
   selector: 'app-purchaselisting',
   templateUrl: './purchaselisting.component.html',
@@ -38,7 +41,8 @@ export class PurchaseListComponent implements OnInit {
     private elementRef: ElementRef,
     private route: ActivatedRoute,
     private router: Router,
-    private location: Location
+    private location: Location,
+    private nzContextMenuService: NzContextMenuService
   ) { 
     location.onUrlChange(url => this.ngAfterContentInit());
   }
@@ -705,5 +709,53 @@ export class PurchaseListComponent implements OnInit {
           }
         );
     });
+  }
+
+  activatedNode?: NzTreeNode;
+  nodes = [
+    {
+      title: 'purchase id ',
+      key: '100',
+      // author: 'NG ZORRO',
+      expanded: true,
+      children: [
+        { title: 'K0077 - 1 ', key: '1000', author: 'NG ZORRO', isLeaf: true },
+        { title: 'K0078 - 2', key: '1001', author: 'NG ZORRO', isLeaf: true }
+      ]
+    },
+    {
+      title: 'parent 1',
+      key: '101',
+      // author: 'NG ZORRO',
+      children: [
+        { title: 'leaf 1-0', key: '1010', author: 'NG ZORRO', isLeaf: true },
+        { title: 'leaf 1-1', key: '1011', author: 'NG ZORRO', isLeaf: true }
+      ]
+    }
+  ];
+
+  openFolder(data: NzTreeNode | NzFormatEmitEvent): void {
+    // do something if u want
+    if (data instanceof NzTreeNode) {
+      data.isExpanded = !data.isExpanded;
+    } else {
+      const node = data.node;
+      if (node) {
+        node.isExpanded = !node.isExpanded;
+      }
+    }
+  }
+
+  activeNode(data: NzFormatEmitEvent): void {
+    console.log(data);
+    this.activatedNode = data.node!;
+  }
+
+  contextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
+    this.nzContextMenuService.create($event, menu);
+  }
+
+  selectDropdown(): void {
+    // do something
   }
 }

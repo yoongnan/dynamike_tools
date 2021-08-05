@@ -2,7 +2,7 @@
     <div style="width:100%;display:inline-block;border-bottom: orangered 1px solid;">
         <nz-page-header >
             <!-- <nz-page-header nzBackIcon [nzGhost]="false"> -->
-              <nz-page-header-title>Product Expired List 货品过期记录</nz-page-header-title>
+              <nz-page-header-title>Goods Price List 货品本钱记录</nz-page-header-title>
               <!-- <nz-page-header-subtitle>This is a subtitle</nz-page-header-subtitle> -->
               <nz-page-header-extra>
                 <button nz-button nzType="primary" (click)="init()"  ><i nz-icon nzType="reload"></i>Reload</button>
@@ -179,6 +179,7 @@
                                 <td>
                                     {{p.purchase.date}}
                                 </td> 
+                                <td>{{p.unitCost}}</td>
                                 <td>
                                     {{p.purchase.supplier.name}}
                                 </td>

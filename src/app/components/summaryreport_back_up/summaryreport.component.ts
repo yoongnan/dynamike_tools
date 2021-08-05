@@ -16,7 +16,7 @@ import { Location } from '@angular/common';
   templateUrl: './summaryreport.component.html',
   styleUrls: ['./summaryreport.component.scss']
 })
-export class SummaryReportComponent implements OnInit {
+export class SummaryReportBackupComponent implements OnInit {
   ShowColumnData: any[];
   ShowColumn: string[] = [];
   tableShowOverflow: string;
@@ -269,7 +269,7 @@ export class SummaryReportComponent implements OnInit {
       }
     })
 
-    this.dcrService.getPOSSummaryMonthlyReport(value).subscribe(data => {
+    this.dcrService.getPOSMonthlyReport(value).subscribe(data => {
       this.monthReport =data;      
       console.log(data);
 

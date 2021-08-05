@@ -322,6 +322,8 @@ export class ProductAddComponent implements OnInit {
     supplier_id:any;
     supplier_name:any;
     invoice_no : any;
+    product_id ="";
+    barcode = "";
     code= "";
     name= "";
     product_type= "1";
@@ -345,7 +347,7 @@ export class ProductAddComponent implements OnInit {
     price_10;
     saveProduct(){
       let product: any = {
-        "id": this.code,
+        "id": this.product_id,
         "name": this.name,
         "type": this.product_type,
         "stock": this.stock,
@@ -357,10 +359,11 @@ export class ProductAddComponent implements OnInit {
         "images": this.imageFile,
         "supplier":[],
         "code": this.code,
+        "barCode": this.barcode,
         "item":[]
       } 
       let item: any = {        
-        "id": this.code,
+        "id": this.product_id,
         // "product":[],
         "priceType": this.price_type,
         "sellingPrice": parseFloat(this.selling_price).toFixed(2),
@@ -394,7 +397,7 @@ export class ProductAddComponent implements OnInit {
       
       if(this.imageFile){
         let promise = new Promise((resolve, reject) => {
-          this.dcrService.upload(product,this.imageFile)
+          this.dcrService.upload(product,this.imageFile,false)
           // this.dcrService.upload(item,this.imageFile)
             .toPromise()
             .then(
@@ -409,7 +412,7 @@ export class ProductAddComponent implements OnInit {
         });
       }else{
         let promise = new Promise((resolve, reject) => {
-          this.dcrService.quickUpload(product)
+          this.dcrService.quickUpload(product,false)
           // this.dcrService.quickUpload(item)
             .toPromise()
             .then(
@@ -547,6 +550,7 @@ export class ProductAddComponent implements OnInit {
     this.supplier_id = null;
     this.supplier_name=null;
     this.invoice_no=null;
+    this.product_id=null;
     this.code=null;
     this.name=null;
     this.product_type=null;
@@ -572,5 +576,6 @@ export class ProductAddComponent implements OnInit {
     this.isImageSaved =false;
     this.cardImageBase64 = null;
     this.filename = null;
+    this.barcode = null;
   }
 }

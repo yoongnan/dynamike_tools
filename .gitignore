@@ -1,5 +1,7 @@
 # Compiled class file
 *node_modules/*
 *www/*
+*com.dynamike.pos-win32-x64/*
+*metadata/*
 *plugins/*
 *platforms/*

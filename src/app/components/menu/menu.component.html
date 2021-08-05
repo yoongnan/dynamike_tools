@@ -5,7 +5,8 @@
 <ul nz-menu nzMode="inline" >
   <li nz-menu-item (click)="click(1)">
     {{navList[1].name}}
-  </li>
+  </li>  
+  <li nz-menu-item (click)="click(23)" >{{navList[23].name}}</li>
   <li nz-submenu nzTitle="Purchase 进货" nzIcon="setting">
     <ul>
       <li nz-menu-group nzTitle="Maintenance">
@@ -37,6 +38,7 @@
           <li nz-menu-item (click)="click(10)" >{{navList[10].name}}</li>
           <li nz-menu-item (click)="click(3)" >{{navList[3].name}}</li>
           <li nz-menu-item (click)="click(21)" >{{navList[21].name}}</li>
+          <li nz-menu-item (click)="click(22)" >{{navList[22].name}}</li>
         </ul>
       </li>
     </ul>
@@ -59,6 +61,7 @@
         <ul>
           <li nz-menu-item (click)="click(19)" >{{navList[19].name}}</li>
           <li nz-menu-item (click)="click(18)" >{{navList[18].name}}</li>
+          <li nz-menu-item (click)="click(24)" >{{navList[24].name}}</li>
         </ul>
       </li>
     </ul>

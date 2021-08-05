@@ -21,6 +21,9 @@ import { StockTickComponent } from './components/stock_tick/stock_tick.component
 import { StockCheckComponent } from './components/stock_check/stock_check.component';
 import { CashFlowComponent } from './components/cashflow/cashflow.component';
 import { ExpiredListComponent } from './components/expired_listing/expired_listing.component';
+import { GoodsPriceListComponent } from './components/goods_price_listing/goods_price_listing.component';
+import { SummaryReportBackupComponent } from './components/summaryreport_back_up/summaryreport.component';
+import { StockCheckListComponent } from './components/stock_check_listing/stock_check.component';
 
 export const ROUTES: Routes = [
   {
@@ -82,6 +85,15 @@ export const ROUTES: Routes = [
   },     
   {
     path: 'Expired', component: ExpiredListComponent,
+  },      
+  {
+    path: 'SummaryBackup', component: SummaryReportBackupComponent,
+  },        
+  {
+    path: 'GoodsPrice', component: GoodsPriceListComponent,
+  },        
+  {
+    path: 'StockCheckListing', component: StockCheckListComponent,
   }, 
   
   { path: '**', redirectTo: '/SummaryReport', pathMatch: 'full' },

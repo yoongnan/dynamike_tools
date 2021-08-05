@@ -501,13 +501,13 @@
                             </th>
                             <th nzLeft class="firstTh" style="text-align: center;top: 54px;z-index: 20;">内容</th>
                             <th nzLeft class="firstTh" style="text-align: center;top: 54px;z-index: 20;">
-                                支出 / Expenditure
+                                RM
                             </th>
                             <th nzLeft class="firstTh" style="text-align: center;top: 54px;z-index: 20;">
-                                平台收费 / PlatForm Fees
+                                RM
                             </th>
                             <th nzLeft class="firstTh" style="text-align: center;top: 54px;z-index: 20;">
-                                货成本 / Cost of Goods
+                                RM
                             </th>
                             <th nzLeft class="firstTh" style="text-align: center;top: 54px;z-index: 20;"></th>
                             <th nzLeft class="firstTh" style="text-align: center;top: 54px;z-index: 20;"
@@ -523,36 +523,121 @@
                                     Earned / 赚
                             </th>
                         </tr>
+                        <tr>
+                            <ng-container *ngFor="let release of columnData">
+                                <th nz-tooltip [nzTooltipTitle]="titleTemplate" class="" nzLeft
+                                    style="text-align: center;top: 94px;z-index: 20;font-size: 12px;">
+                                    {{release.version}}
+                                    <span [ngClass]="{'techGuided' : !release.techGuided }"></span>
+                                    <span [ngClass]="{'genGuided': !release.genGuided }"></span>
+
+                                </th>
+                                <ng-template #titleTemplate>
+                                    <span>{{release.version}}</span><br>
+                                    <span>GA : {{formatTime(release.gaDate)}}</span><br>
+                                    <span *ngIf="release.rnLink"><a href="{{release.rnLink}}" target="_blank">Release
+                                            Notes</a><br></span>
+                                    <span *ngIf="release.dLink"><a href="{{release.dLink}}" target="_blank">Download
+                                            Page</a><br></span>
+                                </ng-template>
+                            </ng-container>
+                        </tr>
                     </thead>
                     <tbody>
                         <ng-container *ngFor="let p of monthReport; let i =index">  
+                            <!-- <style>
+                                tr>td>div>div{
+                                    border: 1px solid #f0f0f0;
+                                    min-height: 12px;
+                                    min-width:50px;
+                                }
+                            </style>
+                            <tr>
+                                <td >{{month[i]}}</td>
+                                <td>
+                                    <div>
+                                        <div>Sales / 销售</div>
+                                        <div >Expenditure / 支出</div>
+                                        <div >Balance</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div>{{p.sale}}</div>
+                                        <div ></div>
+                                        <div ></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div></div>
+                                        <div >{{p.expenditure}}</div>
+                                        <div ></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div></div>
+                                        <div></div>
+                                        <div >{{p.balance}}</div>
+                                    </div>
+                                </td>                            
+                                <td>
+                                    <div>
+                                        <div>Lazada: {{p.lazada}}</div>
+                                        <div>Shopee: {{p.shopee}}</div>
+                                        <div>Local Shop: {{p.localShop}}</div>
+                                    </div>
+                                </td>                         
+                                <td>
+                                    <div>
+                                        <div>{{p.stocks}}</div>
+                                        <div></div>
+                                        <div>單數，共</div>
+                                    </div>
+                                </td>                        
+                                <td>
+                                    <div>
+                                        <div>{{p.inventoryCash}}</div>
+                                        <div></div>
+                                        <div>{{p.orderCount}}</div>
+                                    </div>
+                                </td>                        
+                                <td>
+                                    <div>
+                                        <div></div>
+                                        <div></div>
+                                        <div>{{p.earned}}</div>
+                                    </div>
+                                </td>
+                            </tr> -->
                             <td style="border-top:  1px solid black;border-bottom:  1px solid black;" rowspan="4">{{month[i]}}</td>
                             <tr style="border-top:  1px solid black;" >
-                                <td>Net Sales / 销售 : RM {{p.netsales}}</td>
-                                        <td>Total : {{p.monthExpenditure}}</td>
-                                        <td>Payment Fees: {{p.paymentFees}}</td>
-                                        <td>Sales: {{p.sale}}</td>
+                                <td>Sales / 销售</td>
+                                        <td>{{p.sale}}</td>
+                                        <td></td>
+                                        <td></td>
                                         <td>Lazada: {{p.lazada}}</td>
                                         <td>{{p.stocks}}</td>
                                         <td>{{p.inventoryCash}}</td>
                                         <td></td>
                             </tr>
                             <tr>
-                                <td >Cash Out / 出钱 : RM {{p.expenditure}}</td>
-                                        <td>包装: {{p.packages}}</td>
-                                        <td>Shipping/Other: {{p.shippingFees}}/{{p.otherFees}}</td>
-                                        <td>成本: {{p.cogs}}</td>
+                                <td >Expenditure / 支出</td>
+                                        <td></td>
+                                        <td>{{p.expenditure}}</td>
+                                        <td></td>
                                         <td>Shopee: {{p.shopee}}</td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
                             </tr>
                             <tr style="border-bottom:  1px solid black;" >
-                                <td style="border-bottom:  1px solid black;" >Balance : RM {{p.balance}}</td>
-                                        <td style="border-bottom:  1px solid black;" >广告/赔钱: {{p.advertisement}}/{{p.refund}}</td>
-                                        <td style="border-bottom:  1px solid black;" >Service/Commission: {{p.serviceFees}}/{{p.commissionFees}}</td>
+                                <td style="border-bottom:  1px solid black;" >Balance</td>
                                         <td style="border-bottom:  1px solid black;" ></td>
-                                        <td style="border-bottom:  1px solid black;" >Local Shop: {{p.localShop}} </td>
+                                        <td style="border-bottom:  1px solid black;" ></td>
+                                        <td style="border-bottom:  1px solid black;" >{{p.balance}}</td>
+                                        <td style="border-bottom:  1px solid black;" >Local Shop: {{p.localShop}}</td>
                                         <td style="border-bottom:  1px solid black;" >單數，共</td>
                                         <td style="border-bottom:  1px solid black;" >{{p.orderCount}}</td>
                                         <td style="border-bottom:  1px solid black;" >{{p.earned}}</td>

@@ -1,0 +1,231 @@
+<div class="contain-inter">
+    <!-- <div class="tableShow-area" [style.width]="tableShowWid" [style.overflow]="tableShowOverflow" -->
+    <div style="width:100%;display:inline-block;border-bottom: orangered 1px solid;">
+        <h2 style="float:left;"><span>Stock Check Listing 查货记录</span></h2>
+        <!-- <button nz-button nzType="primary" (click)="init()"  ><i nz-icon nzType="reload"></i>Reload</button> -->
+        <div style="float:right">
+            <nz-button-group nzSize="small" class="tableBut" >
+                <button nzType="primary" title="{{tooltipOne[0]}}" nz-button
+                    (click)="runCheckStock()">Run Check / 查货</button>
+                    <!-- [disabled]="tableEmpty" -->
+            </nz-button-group>
+        </div>
+    </div>
+    <div class="tableShow-area" [style.width]="tableShowWid" style="height: fit-content;"
+        (scroll)="onScroll($event)">
+        <style>
+            .displayText{
+                width:250px;
+            }
+            .inputWidth{
+                width:95%;
+            }
+        </style>
+        <div class="tableShow-table">
+            <div style="width:100%">
+                <div style="display: flex;width: 100%;">
+                    <div style="width: 100%;">   
+                        <label class="displayText">Year: </label>
+                        <nz-select nzShowSearch [(ngModel)]="year_index" (ngModelChange)="AccountYearChange($event)"
+                            nzPlaceHolder="Select a Year">
+                            <ng-container *ngFor="let p of AccountYears">
+                                <nz-option *ngIf="!YearLoadSel" [nzValue]="p" [nzLabel]="p"></nz-option>
+                            </ng-container>
+                            <nz-option *ngIf="YearLoadSel" nzDisabled nzCustomContent>
+                                <i nz-icon nzType="loading" class="loading-icon"></i> Loading Data...
+                            </nz-option>
+                        </nz-select>
+                        <label class="displayText">Month: </label>
+                        <nz-select nzShowSearch [(ngModel)]="month_index" (ngModelChange)="AccountMonthChange($event)"
+                            nzPlaceHolder="Select a Month">
+                            <ng-container *ngFor="let p of month">
+                                <nz-option [nzValue]="p.id" [nzLabel]="p.value"></nz-option>
+                            </ng-container>
+                        </nz-select>
+                    </div>
+                </div>
+                <div style="display: flex;width: 100%;">
+                    <div style="width: 100%;">                        
+                        <label class="displayText">Date / 日期 :</label>
+                        <nz-select nzShowSearch [(ngModel)]="purchase_date" 
+                        (ngModelChange)="stockCheckListing($event)"                        
+                            nzPlaceHolder="Select a Date">
+                            <ng-container *ngFor="let p of StockCheckDate">
+                                <nz-option [nzValue]="p.date" [nzLabel]="p.date"></nz-option>
+                            </ng-container>
+                        </nz-select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="butArea" style="border: 2px solid grey;  margin-top: 10px;">
+                
+                <div class="divBut">
+                    <nz-button-group nzSize="small" class="tableBut">
+                        <button nzType="primary" title="{{tooltipOne[0]}}" nz-button [disabled]="tableEmpty"
+                            (click)="printLink()">Print</button>
+                        <button nzType="primary" title="{{tooltipOne[1]}}" nz-button [disabled]="tableEmpty"
+                            (click)="CSVlink()">CSV</button>
+                        <button nzType="primary" title="{{tooltipOne[2]}}" nz-button [disabled]="tableEmpty"
+                            (click)="copyClick()">Copy</button>
+                    </nz-button-group>
+                </div>
+                <div [style.height]="'30px'" class="tableTop">
+                    <div class="thLeft" style="width:100%">
+                        <a class="columns" style="pointer-events: auto;"
+                            [ngStyle]="{'cursor':tableEmpty?'not-allowed':''}" nz-dropdown [nzDisabled]="tableEmpty"
+                            nzTrigger="click" [nzDropdownMenu]="menu">
+                            <span>
+                                Hide Columns
+                            </span>
+                        </a>
+                        <nz-dropdown-menu #menu="nzDropdownMenu">
+                            <div class="dropDownCls">
+                                <div class="Down-header">Show Columns</div>
+                                <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="unCheck($event)">
+                                    <div nz-row>
+                                        <div *ngFor="let i of ShowColumnData" nz-col nzSpan="24"><label nz-checkbox
+                                                [nzValue]="i" [nzDisabled]="i.disabled"
+                                                [ngModel]="i.checked">{{i.name}}</label></div>
+                                    </div>
+                                </nz-checkbox-wrapper>
+                            </div>
+                        </nz-dropdown-menu>
+                    </div>
+                </div>
+                <nz-table #groupingTable id="PurchaseTable" [nzData]="StockCheckListing" nzBordered nzSize="small"
+                    nzHideOnSinglePage="true" [nzFrontPagination]="false" [nzNoResult]="emptyTemplate">
+                    <ng-template #emptyTemplate>
+                        <tr>
+                            <nz-empty *ngIf="NoResultId=='No Data'" nzNotFoundImage="simple"></nz-empty>
+                            <nz-empty *ngIf="NoResultId=='No Result'" nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                                [nzNotFoundContent]="contentTpl">
+                                <ng-template #contentTpl>
+                                    <span> {{NoResultId}} </span>
+                                </ng-template>
+                            </nz-empty>
+                        </tr>
+                    </ng-template>
+                    <thead>
+                        <tr>
+                            <ng-container *ngFor="let p of headerColumn">
+                                <th nzLeft class="firstTh" style="text-align: center;top: 54px;z-index: 20;"
+                                    [colspan]="1">
+                                    {{p}}
+                                </th>
+                            </ng-container>
+                        </tr>
+                        <tr>
+                            <ng-container *ngFor="let release of columnData">
+                                <th nz-tooltip [nzTooltipTitle]="titleTemplate" class="" nzLeft
+                                    style="text-align: center;top: 94px;z-index: 20;font-size: 12px;">
+                                    {{release.version}}
+                                    <span [ngClass]="{'techGuided' : !release.techGuided }"></span>
+                                    <span [ngClass]="{'genGuided': !release.genGuided }"></span>
+
+                                </th>
+                                <ng-template #titleTemplate>
+                                    <span>{{release.version}}</span><br>
+                                    <span>GA : {{formatTime(release.gaDate)}}</span><br>
+                                    <span *ngIf="release.rnLink"><a href="{{release.rnLink}}" target="_blank">Release
+                                            Notes</a><br></span>
+                                    <span *ngIf="release.dLink"><a href="{{release.dLink}}" target="_blank">Download
+                                            Page</a><br></span>
+                                </ng-template>
+                            </ng-container>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let p of StockCheckListing,let i = index">
+                            <tr >
+                                <td>
+                                    {{p.productId}}
+                                </td>  
+                                <td class="trDisplayLabel{{i}}">
+                                    {{p.quantity}}
+                                </td> 
+                                <!-- <td class="trEditLabel{{i}}" style="display:none">
+                                    <input  class="listingeditinput" (change)="calTotalStock(i)"  [(ngModel)]="p.stock" />
+                                </td> 
+                                -->
+                                <td class="trDisplayLabel{{i}}">
+                                    {{p.unitCost}}
+                                </td>
+                                <td class="trDisplayLabel{{i}}">
+                                    {{p.total}}
+                                </td> 
+                                <!-- <td class="trDisplayLabel{{i}}">
+                                    {{p.stockcheck.quantity}}
+                                </td>  
+                                <td class="trEditLabel{{i}}" style="display:none">
+                                    <input  class="listingeditinput" (change)="calStockTotalStock(i)"  [(ngModel)]="p.stockcheck.quantity" />
+                                </td> 
+                                <td>
+                                    {{p.unit_cost}}
+                                </td>  
+                                <td>
+                                    {{p.total_stock}}
+                                </td>   -->
+                                <td>
+                                    <button nz-button nzType="primary" (click)="update(i)"><i nz-icon nzType="edit" ></i>Edit</button>                                 
+                                </td>
+                                   
+                            </tr>    
+                        </ng-container>
+
+                            <!-- <tr >
+                                <td >
+                                </td>  
+                                <td>
+                                    Total
+                                </td> 
+                                <td>
+                                    {{stock_check_total_stock_value}}
+                                </td>
+                                <td>
+                                    Total
+                                </td>  
+                                <td>
+                                    {{total_stock_value}}
+                                </td>  
+                                <td>                                
+                                </td>
+                                
+                            </tr>   -->
+                        
+                    </tbody>
+                </nz-table>
+                <div id="PurchasePrint" [style.display]="copyType">
+                    <table>
+                        <tr>
+                            <th> </th>
+                            <ng-container *ngFor="let productName of headerName">                                
+                                <th *ngFor="let release of headerNameArr[productName]">
+                                    {{release.productName}} {{release.version}} <span
+                                    *ngIf="!release.techGuided||!release.genGuided">*</span>
+                                </th>
+                            </ng-container>
+                        </tr>
+                        <tbody>
+                            <tr *ngFor="let p of groupingTable.data">
+                                <td>{{p.versionName}}                                    
+                                    <span *ngIf="!p.techGuided||!p.genGuided">*</span>
+                                </td>
+                                <ng-container *ngFor="let release of p.releases,let i = index">
+                                    <td *ngIf="release.footnotes==undefined" [style.background]="'#d7d7d7'"></td>
+                                    <td *ngIf="release.footnotes!=undefined">
+                                        <span>{{tableTdWords[release.status]}}</span>
+                                    </td>
+                                </ng-container>
+                            </tr>
+                        </tbody>
+                        <tr></tr>
+                    </table>
+                    <span>* This is a legacy release. For more information, please refer to https://lifecycle.vmware.com.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<ngx-loading [show]="isVisible" [config]="{ backdropBorderRadius: '3px'}" [template]="customLoadingTemplate">
+</ngx-loading>
