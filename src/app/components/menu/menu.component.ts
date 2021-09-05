@@ -52,6 +52,8 @@ export class MenuComponent implements OnInit {
       { "name": "Goods Price 货品本钱记录", "link": "/GoodsPrice" },
       { "name": "Old Summary Report", "link": "/SummaryBackup" },
       { "name": "Stock Check Listing", "link": "/StockCheckListing" },
+      { "name": "Invoice Add", "link": "/InvoiceAdd" },
+      
       
     ]
 
@@ -105,22 +107,14 @@ export class MenuComponent implements OnInit {
       this.Selected = 23;
     }  else if (this.router.url.includes("/StockCheckListing")) {
       this.Selected = 24;
-    }  
+    }  else if (this.router.url.includes("/InvoiceAdd")) {
+      this.Selected = 25;
+    } 
     this.common.setItem("tabNu", this.Selected);
   }
 
   click(n) {
     this.common.setItem("tabNu", n);
-    // let but: any = document.getElementById('walkMeId');
-    // if (n != 0) {
-
-    //   but.disabled = true
-
-    // } else {
-
-    //   but.disabled = false
-
-    // }
     switch (n) {
       case 0: {
         this.common.getItem("hashTab1") == undefined ? this.router.navigateByUrl('/') : window.location.hash = this.common.getItem("hashTab1");
@@ -220,6 +214,10 @@ export class MenuComponent implements OnInit {
       }
       case 24: {
         this.common.getItem("hashTab25") == undefined ? this.router.navigateByUrl(`/StockCheckListing`) : window.location.hash = this.common.getItem("hashTab25");
+        break;
+      }
+      case 25: {
+        this.common.getItem("hashTab26") == undefined ? this.router.navigateByUrl(`/InvoiceAdd`) : window.location.hash = this.common.getItem("hashTab26");
         break;
       }
     }

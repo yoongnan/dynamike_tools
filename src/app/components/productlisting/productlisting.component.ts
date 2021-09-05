@@ -75,7 +75,7 @@ export class ProductListingComponent implements OnInit {
   ProductData:any;
   init() {
     let promise = new Promise((resolve, reject) => {
-      this.dcrService.getPOSProductTypes()
+      this.dcrService.getProductTypes()
         .toPromise()
         .then(
           data => { // Success
@@ -87,7 +87,7 @@ export class ProductListingComponent implements OnInit {
           }
         );
     });
-      // this.dcrService.getPOSProductTypes().subscribe(data => {
+      // this.dcrService.getProductTypes().subscribe(data => {
       //   this.ProductTypeLoadSel = false;
       //   this.ProductTypes = data;
       // }, error => {
@@ -102,7 +102,7 @@ export class ProductListingComponent implements OnInit {
     this.product_type = null;
     if(this.product_name){
       let promise = new Promise((resolve, reject) => {
-        this.dcrService.getPOSProductbyId(this.product_name)
+        this.dcrService.getProductbyCode(this.product_name)
           .toPromise()
           .then(
             data => { // Success
@@ -115,7 +115,7 @@ export class ProductListingComponent implements OnInit {
             }
           );
       });
-      // this.dcrService.getPOSProductbyId(this.product_name).subscribe(data => {
+      // this.dcrService.getProductbyId(this.product_name).subscribe(data => {
       //   this.isVisible = false;
       //   this.ProductData = data;
       //   this.footer=true;
@@ -127,7 +127,7 @@ export class ProductListingComponent implements OnInit {
 
     }else{
       let promise = new Promise((resolve, reject) => {
-        this.dcrService.getPOSProduct()
+        this.dcrService.getProduct()
           .toPromise()
           .then(
             data => { // Success
@@ -140,7 +140,7 @@ export class ProductListingComponent implements OnInit {
             }
           );
       });
-      // this.dcrService.getPOSProduct().subscribe(data => {
+      // this.dcrService.getProduct().subscribe(data => {
       //   this.isVisible = false;
       //   this.ProductData = data;
       //   this.NoResultId=""
@@ -158,7 +158,7 @@ export class ProductListingComponent implements OnInit {
   footer = true;
   ProductTypeChange(value) {
     let promise = new Promise((resolve, reject) => {
-      this.dcrService.getPOSProductbyType(value,null,null)
+      this.dcrService.getProductbyType(value,null,null)
         .toPromise()
         .then(
           data => { // Success
@@ -183,7 +183,7 @@ export class ProductListingComponent implements OnInit {
           }
         );
     });
-    // this.dcrService.getPOSProductbyType(value,null,null).subscribe(data => {
+    // this.dcrService.getProductbyType(value,null,null).subscribe(data => {
     //   this.footer = false;
     //   console.log(data);
     //   this.ProductData = data["content"];
@@ -328,7 +328,7 @@ export class ProductListingComponent implements OnInit {
     // this.loadingMore = true;
     // this.ProductData = this.data.concat([...Array(count)].fill({}).map(() => ({ loading: true, name: {} })));
     let promise = new Promise((resolve, reject) => {
-      this.dcrService.getPOSProductbyType(this.product_type,this.currentPage,this.pageSize)
+      this.dcrService.getProductbyType(this.product_type,this.currentPage,this.pageSize)
         .toPromise()
         .then(
           data => { // Success
@@ -356,7 +356,7 @@ export class ProductListingComponent implements OnInit {
     console.log("nextPage:"+value);
     if(value != this.currentPage){
       let promise = new Promise((resolve, reject) => {
-        this.dcrService.getPOSProductbyType(this.product_type,value-1,this.pageSize)
+        this.dcrService.getProductbyType(this.product_type,value-1,this.pageSize)
           .toPromise()
           .then(
             data => { // Success
@@ -375,7 +375,7 @@ export class ProductListingComponent implements OnInit {
             }
           );
       });
-      // this.dcrService.getPOSProductbyType(this.product_type,value-1,this.pageSize).subscribe(data => {
+      // this.dcrService.getProductbyType(this.product_type,value-1,this.pageSize).subscribe(data => {
       //   this.footer = false;
       
       //   this.ProductData = data["content"];

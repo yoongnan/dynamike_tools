@@ -164,7 +164,7 @@ export class ExpiredListComponent implements OnInit {
   {"id":11,"value":"November 十一月"},
   {"id":12,"value":"December 十二月"}]
   // headerdate = ["","Product Code /货品","Quantity / 数量","Expired / 过期","Date / 日期","Suppiler / 供应商", "Detail / 记录"];
-  headerdate = ["","Purchase Id","Date / 日期","Suppiler / 供应商","Invoice Id / 进货单号码","Quantity / 数量","Expired / 过期", "Detail / 记录"];
+  headerdate = ["","Purchase Id","Date / 日期","Suppiler / 供应商","Invoice Id / 进货单号码","Quantity / 数量","Expired / 过期", "Update Expired / 记录","Split Record"];
 
   All ="All / 全部";
   Purchases :any;
@@ -186,7 +186,7 @@ export class ExpiredListComponent implements OnInit {
   }
   AccountYearChange(value){
 
-    this.dcrService.getPOSExpiredCheck(value).subscribe(data => {
+    this.dcrService.getExpiredCheck(value).subscribe(data => {
       // this.LoadSel = false;
       this.Purchases = data;
       console.log(data);
@@ -215,7 +215,7 @@ export class ExpiredListComponent implements OnInit {
     
     // console.log(this.Purchases[value].id);
     console.log(this.Purchases[value].id);
-    this.dcrService.getPOSPurchaseItems(this.Purchases[value].id).subscribe(data => {
+    this.dcrService.getPurchaseItems(this.Purchases[value].id).subscribe(data => {
       console.log(data);
       this.purchase_id = this.Purchases[value].id;
       this.PurchaseItems = data;     
@@ -510,7 +510,7 @@ export class ExpiredListComponent implements OnInit {
   EditInit(i) {
     let d = new Date();
     this.purchase_date = new Date().toISOString().split("T")[0];
-    this.dcrService.getPOSPurchaseById(i).subscribe(data => {
+    this.dcrService.getPurchaseById(i).subscribe(data => {
       this.Purchase = data;
       this.purchase_id=this.Purchase.id;
       this.paid=this.Purchase.paid;
@@ -532,7 +532,7 @@ export class ExpiredListComponent implements OnInit {
       }
     })
 
-    this.dcrService.getPOSSuppliers().subscribe(data => {
+    this.dcrService.getSuppliers().subscribe(data => {
       this.SupplierLoadSel = false;
       this.Suppliers = data;
     }, error => {
@@ -541,7 +541,7 @@ export class ExpiredListComponent implements OnInit {
       }
     })
 
-    this.dcrService.getPOSInvoiceType([1,2,3,4,5,6,7,16]).subscribe(data => {
+    this.dcrService.getInvoiceType([1,2,3,4,5,6,7,16]).subscribe(data => {
       this.InvoiceLoadSel = false;
       this.InvoiceType = data;
     }, error => {
@@ -566,7 +566,7 @@ export class ExpiredListComponent implements OnInit {
   currentStockValue:any;
   searchProduct(){
     if(this.item_code){
-      this.dcrService.getPOSExpiredCheck(this.item_code).subscribe(data => {
+      this.dcrService.getExpiredCheck(this.item_code).subscribe(data => {
         this.Purchases = data;
         console.log(data);
         if(this.Purchases.length>0){
@@ -587,7 +587,50 @@ export class ExpiredListComponent implements OnInit {
     }    
   }
 
-  
+  splitPurchases=[];
+  split_quantity = 0;
+  split(value,quantity){
+    if(document.getElementsByClassName("trDisplaySplit"+value)[0].getAttribute("style")=="display:none"){
+      let promise = new Promise((resolve, reject) => {
+        this.splitPurchases = [];
+        let splited;
+        splited = JSON.parse(JSON.stringify(this.Purchases[value]));
+        splited.id = null;
+        splited.quantity = quantity;
+        this.Purchases[value].quantity = parseInt(this.Purchases[value].quantity) - parseInt(quantity);
+        this.splitPurchases.push(this.Purchases[value]);
+        this.splitPurchases.push(splited);
+        this.dcrService.splitExpired(this.splitPurchases)
+          .toPromise()
+          .then(
+            res => { // Success
+              this.common.createModalMessage("Successful","save successful!!!").success();
+              for(var i = 0 ; i < document.getElementsByClassName("trEditSplit"+value).length ; i++){
+                document.getElementsByClassName("trEditSplit"+value)[i].setAttribute("style","display:none");
+                document.getElementsByClassName("trDisplaySplit"+value)[i].setAttribute("style","display:");
+              }
+              this.searchProduct();
+            },
+            msg => { // Error
+              this.common.createModalMessage(msg.error.error, msg.error.message).error()
+            }
+          );
+      });
+    }else{    
+      for(var i = 0 ; i < document.getElementsByClassName("trEditSplit"+value).length ; i++){
+        document.getElementsByClassName("trEditSplit"+value)[i].setAttribute("style","display:");
+        document.getElementsByClassName("trDisplaySplit"+value)[i].setAttribute("style","display:none");
+      }
+    }
+  }
+  cancelsplit(value){
+    if(document.getElementsByClassName("trDisplaySplit"+value)[0].getAttribute("style")=="display:none"){
+      for(var i = 0 ; i < document.getElementsByClassName("trEditSplit"+value).length ; i++){
+        document.getElementsByClassName("trEditSplit"+value)[i].setAttribute("style","display:none");
+        document.getElementsByClassName("trDisplaySplit"+value)[i].setAttribute("style","display:");
+      }            
+    }
+  }
   update(value){
     
     if(document.getElementsByClassName("trDisplayLabel"+value)[0].getAttribute("style")=="display:none"){

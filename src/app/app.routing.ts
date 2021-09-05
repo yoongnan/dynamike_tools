@@ -24,6 +24,7 @@ import { ExpiredListComponent } from './components/expired_listing/expired_listi
 import { GoodsPriceListComponent } from './components/goods_price_listing/goods_price_listing.component';
 import { SummaryReportBackupComponent } from './components/summaryreport_back_up/summaryreport.component';
 import { StockCheckListComponent } from './components/stock_check_listing/stock_check.component';
+import { InvoiceAddComponent } from './components/invoice_add/invoice_add.component';
 
 export const ROUTES: Routes = [
   {
@@ -95,6 +96,9 @@ export const ROUTES: Routes = [
   {
     path: 'StockCheckListing', component: StockCheckListComponent,
   }, 
+  {
+    path: 'InvoiceAdd', component: InvoiceAddComponent,
+  },
   
   { path: '**', redirectTo: '/SummaryReport', pathMatch: 'full' },
 ];

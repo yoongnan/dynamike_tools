@@ -191,7 +191,7 @@ export class PurchaseListComponent implements OnInit {
   }
   AccountYearChange(value){
 
-    this.dcrService.getPOSPurchases(value,this.month_index,this.invoice_type).subscribe(data => {
+    this.dcrService.getPurchases(value,this.month_index,this.invoice_type).subscribe(data => {
       // this.LoadSel = false;
       this.Purchases = data;
       console.log(data);
@@ -206,7 +206,7 @@ export class PurchaseListComponent implements OnInit {
   init() {
     this.purchase_date = new Date().toISOString().split("T")[0];
     let promise = new Promise((resolve, reject) => {
-      this.dcrService.getPOSAccountYear()
+      this.dcrService.getAccountYear()
         .toPromise()
         .then(
           data => { // Success
@@ -222,7 +222,7 @@ export class PurchaseListComponent implements OnInit {
         );
     });
     let promise_1 = new Promise((resolve, reject) => {
-      this.dcrService.getPOSInvoiceType([1,2,3,4,5,6,7,16])
+      this.dcrService.getInvoiceType([1,2,3,4,5,6,7,16])
         .toPromise()
         .then(
           data => { // Success
@@ -233,24 +233,22 @@ export class PurchaseListComponent implements OnInit {
             this.common.createModalMessage(msg.error.error, msg.error.message).error()
           }
         );
+    });    
+  }
+  loadProduct(value){
+    let promise = new Promise((resolve, reject) => {
+      this.dcrService.getProductbySupplier(value)
+        .toPromise()
+        .then(
+          data => { // Success
+            this.ProductLoadSel = false;
+            this.Items = data;
+          },
+          msg => { // Error
+            this.common.createModalMessage(msg.error.error, msg.error.message).error()
+          }
+        );
     });
-    // this.dcrService.getPOSInvoiceType([1,2,3,4,5,6,7,16]).subscribe(data => {
-    //   this.InvoiceTypeLoadSel = false;
-    //   this.InvoiceType = data;
-    // }, error => {
-    //   if (error.error.text != "No Results") {
-    //     this.common.errStatus(error.status, error.error);
-    //   }
-    // })
-    this.dcrService.getPOSProducts().subscribe(data => {
-      this.ProductLoadSel = false;
-      this.Items = data;
-    }, error => {
-      if (error.error.text != "No Results") {
-        this.common.errStatus(error.status, error.error);
-      }
-    })
-    
   }
 
   InvoiceType:any;
@@ -262,10 +260,12 @@ export class PurchaseListComponent implements OnInit {
   OldPurchaseItems:any;
   showModal(value): void {
     this.isModalVisible = true;
-    this.dcrService.getPOSPurchaseItems(this.Purchases[value].id).subscribe(data => {
+    this.dcrService.getPurchaseItems(this.Purchases[value].id).subscribe(data => {
       this.purchase_id = this.Purchases[value].id;
       this.PurchaseItems = data;     
       this.OldPurchaseItems=JSON.parse(JSON.stringify(data));
+      console.log(this.Purchases[value]);
+      this.loadProduct(this.Purchases[value].supplier.id);
       document.getElementsByClassName("ant-modal")[0].setAttribute("style","width:100%");  
     }, error => {
       if (error.error.text != "No Results") {
@@ -289,7 +289,7 @@ export class PurchaseListComponent implements OnInit {
   handleCancel(): void {
     console.log('Button cancel clicked!');
     this.isModalVisible = false;
-    
+    this.reset();
     document.getElementById("editModel").style.display = "none";
     document.getElementById("ListingModal").style.display = "";
   }
@@ -547,6 +547,8 @@ export class PurchaseListComponent implements OnInit {
     this.ssm = this.Suppliers[value].companyId;
     this.supplier_name = this.Suppliers[value].name;
 
+    this.loadProduct(this.supplier_id);
+
   }
 
   //upgrade Select data
@@ -556,7 +558,7 @@ export class PurchaseListComponent implements OnInit {
   EditInit(i) {
     let d = new Date();
     this.purchase_date = new Date().toISOString().split("T")[0];
-    this.dcrService.getPOSPurchaseById(i).subscribe(data => {
+    this.dcrService.getPurchaseById(i).subscribe(data => {
       this.Purchase = data;
       this.purchase_id=this.Purchase.id;
       this.paid=this.Purchase.paid;
@@ -572,13 +574,14 @@ export class PurchaseListComponent implements OnInit {
       this.ssm=this.Purchase.supplier.companyId;
       this.purchase_items.purchase_item=this.Purchase.purchaseItemList;
       this.purchase_items.old_purchase_item=JSON.parse(JSON.stringify(this.Purchase.purchaseItemList));
+      this.loadProduct(this.supplier_id);
     }, error => {
       if (error.error.text != "No Results") {
         this.common.errStatus(error.status, error.error);
       }
     })
 
-    this.dcrService.getPOSSuppliers().subscribe(data => {
+    this.dcrService.getSuppliers().subscribe(data => {
       this.SupplierLoadSel = false;
       this.Suppliers = data;
     }, error => {
@@ -587,7 +590,7 @@ export class PurchaseListComponent implements OnInit {
       }
     })
 
-    this.dcrService.getPOSInvoiceType([1,2,3,4,5,6,7,16]).subscribe(data => {
+    this.dcrService.getInvoiceType([1,2,3,4,5,6,7,16]).subscribe(data => {
       this.InvoiceLoadSel = false;
       this.InvoiceType = data;
     }, error => {
@@ -609,7 +612,7 @@ export class PurchaseListComponent implements OnInit {
   Products:any;
   searchProduct(){
     if(this.item_code){
-      this.dcrService.getPOSProductbyId(this.item_code).subscribe(data => {
+      this.dcrService.getProductbyId(this.item_code).subscribe(data => {
         this.Products = data;
         if(this.Products.length>0){
           let Product = this.Products[0];

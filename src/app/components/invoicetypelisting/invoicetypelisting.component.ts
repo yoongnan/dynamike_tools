@@ -182,7 +182,7 @@ export class InvoiceTypeListingComponent implements OnInit {
   init() {
     
     let promise = new Promise((resolve, reject) => {
-      this.dcrService.getPOSAllInvoiceType(null)
+      this.dcrService.getAllInvoiceType(null)
         .toPromise()
         .then(
           data => { // Success
@@ -193,7 +193,7 @@ export class InvoiceTypeListingComponent implements OnInit {
           }
         );
     });
-    // this.dcrService.getPOSAllInvoiceType(null).subscribe(data => {
+    // this.dcrService.getAllInvoiceType(null).subscribe(data => {
     //   this.InvoiceTypes = data;      
     // }, error => {
     //   if (error.error.text != "No Results") {

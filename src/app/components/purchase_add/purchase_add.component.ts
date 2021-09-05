@@ -362,6 +362,19 @@ export class PurchaseAddComponent implements OnInit {
     this.ssm = this.Suppliers[value].companyId;
     this.supplier_name = this.Suppliers[value].name;
 
+    let promise = new Promise((resolve, reject) => {
+      this.dcrService.getProductbySupplier(this.supplier_id)
+        .toPromise()
+        .then(
+          data => { // Success
+            this.ProductLoadSel = false;
+            this.Items = data;
+          },
+          msg => { // Error
+            this.common.createModalMessage(msg.error.error, msg.error.message).error()
+          }
+        );
+    });
   }
 
   //upgrade Select data
@@ -371,30 +384,22 @@ export class PurchaseAddComponent implements OnInit {
   init() {
     let d = new Date();
     this.purchase_date = new Date().toISOString().split("T")[0];
-    let promise = new Promise((resolve, reject) => {
-      this.dcrService.getPOSProducts()
-        .toPromise()
-        .then(
-          data => { // Success
-            this.ProductLoadSel = false;
-      this.Items = data;
-          },
-          msg => { // Error
-            this.common.createModalMessage(msg.error.error, msg.error.message).error()
-          }
-        );
-    });
-    // this.dcrService.getPOSProducts().subscribe(data => {
-    //   this.ProductLoadSel = false;
+    // let promise = new Promise((resolve, reject) => {
+    //   this.dcrService.getProducts()
+    //     .toPromise()
+    //     .then(
+    //       data => { // Success
+    //         this.ProductLoadSel = false;
     //   this.Items = data;
-    // }, error => {
-    //   if (error.error.text != "No Results") {
-    //     this.common.errStatus(error.status, error.error);
-    //   }
-    // })
+    //       },
+    //       msg => { // Error
+    //         this.common.createModalMessage(msg.error.error, msg.error.message).error()
+    //       }
+    //     );
+    // });
 
     let promise_1 = new Promise((resolve, reject) => {
-      this.dcrService.getPOSSuppliers()
+      this.dcrService.getSuppliers()
         .toPromise()
         .then(
           data => { // Success
@@ -407,17 +412,8 @@ export class PurchaseAddComponent implements OnInit {
         );
     });
 
-    // this.dcrService.getPOSSuppliers().subscribe(data => {
-    //   this.SupplierLoadSel = false;
-    //   this.Suppliers = data;
-    // }, error => {
-    //   if (error.error.text != "No Results") {
-    //     this.common.errStatus(error.status, error.error);
-    //   }
-    // })
-
     let promise_2 = new Promise((resolve, reject) => {
-      this.dcrService.getPOSInvoiceType([1,2,3,4,5,6,7,16])
+      this.dcrService.getInvoiceType([1,2,3,4,5,6,7,16])
         .toPromise()
         .then(
           data => { // Success
@@ -431,16 +427,6 @@ export class PurchaseAddComponent implements OnInit {
           }
         );
     });
-    // this.dcrService.getPOSInvoiceType([1,2,3,4,5,6,7,16]).subscribe(data => {
-    //   this.InvoiceLoadSel = false;
-    //   this.InvoiceType = data;
-    //   console.log("InvoiceType:");
-    //   console.log(data);
-    // }, error => {
-    //   if (error.error.text != "No Results") {
-    //     this.common.errStatus(error.status, error.error);
-    //   }
-    // })
     
   }
 
@@ -457,7 +443,7 @@ export class PurchaseAddComponent implements OnInit {
   Products:any;
   searchProduct(){
     if(this.item_code){
-      this.dcrService.getPOSProductbyId(this.item_code).subscribe(data => {
+      this.dcrService.getProductbyId(this.item_code).subscribe(data => {
         this.Products = data;
         if(this.Products.length>0){
           let Product = this.Products[0];

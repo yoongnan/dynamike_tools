@@ -1,78 +1,133 @@
-<div class="contain-inter">
+<div class="contain-inter" style="height: fit-content;">
     <!-- <div class="tableShow-area" [style.width]="tableShowWid" [style.overflow]="tableShowOverflow" -->
     <div style="width:100%;display:inline-block;border-bottom: orangered 1px solid;">
-        <h2 style="float:left;"><span>Stock Check 查货单</span></h2>
-        <!-- <button nz-button nzType="primary" (click)="init()"  ><i nz-icon nzType="reload"></i>Reload</button> -->
+        <h2 style="float:left;"><span>Invoice</span></h2>
+        <button nz-button nzType="primary" (click)="init()"  ><i nz-icon nzType="reload"></i>Reload</button>
         <div style="float:right">
             <nz-button-group nzSize="small" class="tableBut" >
                 <button nzType="primary" title="{{tooltipOne[0]}}" nz-button
-                    (click)="runCheckStock()">Run Check / 查货</button>
+                    (click)="saveOrder()">Save / 保存记录</button>
                     <!-- [disabled]="tableEmpty" -->
             </nz-button-group>
+            <button nzType="primary" nz-button 
+                                    (click)="generateInvoice()">Generate Invoice</button>
         </div>
     </div>
     <div class="tableShow-area" [style.width]="tableShowWid" style="height: fit-content;"
         (scroll)="onScroll($event)">
+        <!-- <div class="">
+            <nz-alert nzBanner nzMessage="Unselect 'Hide Legacy Releases' to check more interoperability." nzCloseable></nz-alert>
+        </div> -->
         <style>
             .displayText{
-                width:250px;
+                width:180px;
             }
             .inputWidth{
-                width:95%;
+                width:100%;
             }
         </style>
         <div class="tableShow-table">
             <div style="width:100%">
                 <div style="display: flex;width: 100%;">
-                    <div style="width: 100%;">                        
+                    <div style="width: 50%;">                        
                         <label class="displayText">Date / 日期 :</label>
-                        <!-- <label >{{purchase_date}}</label> -->
-                        <input type="date" [(ngModel)]="purchase_date" />
+                        <input type="date" [(ngModel)]="date" />
+                    </div>
+                    <div style="width: 50%;">                        
+                        <label class="displayText">Due Date / 日期 :</label>
+                        <input type="date" [(ngModel)]="date" />
                     </div>
                 </div>
             </div>
+            <div >                
+                <div style="width:100%;display:inline-block;border-bottom: orangered 1px solid;">
+                    <h3 style="float:left;"><span>Client / 客人</span></h3>
+                    <div style="float:right">
+                        <nz-button-group nzSize="small" class="tableBut" >
+                            <button nzType="primary" title="{{tooltipOne[0]}}" nz-button 
+                                (click)="saveClient()">Save</button>
+                        </nz-button-group>
+                    </div>
+                </div>
+                <div style="display: flex;width: 100%;">
+                    <div style="width: 100%;">
+                        <label class="displayText">Client / 客人 ：</label>
+                        <nz-select nzShowSearch class="inputWidth"
+                        [(ngModel)]="client_index" (ngModelChange)="ClientChange($event)"
+                            nzPlaceHolder="Select a Client">
+                            <ng-container *ngFor="let p of Client, let i =index">
+                                <nz-option *ngIf="!ClientLoadSel" [nzValue]="i" [nzLabel]="p.name"></nz-option>
+                            </ng-container>
+                            <nz-option *ngIf="ClientLoadSel" nzDisabled nzCustomContent>
+                                <i nz-icon nzType="loading" class="loading-icon"></i> Loading Data...
+                            </nz-option>
+                        </nz-select>
+                    </div>
+                </div>
+                <div style="display: flex;width: 100%;margin-top: 10px;">
+                    <div style="width:100%">
+                        <label class="displayText">Client / 客人名：</label>
+                        <input class="inputWidth" [(ngModel)]="client_name"/>
+                    </div>
+                </div>  
+                <div style="display: flex;width: 100%;margin-top: 10px;">
+                    <div style="width:100%">
+                        <label class="displayText">Address / 客人地址：</label>
+                        <textarea rows="5" class="inputWidth" [(ngModel)]="client_address"></textarea>
+                    </div>
+                </div>  
+                <div style="display: flex;width: 100%;margin-top: 10px;">
+                    <!-- <div style="width:50%">
+                        <label class="displayText">Contact No. / 电话号码：</label>
+                        <input  class="inputWidth" [(ngModel)]="client_contact"/>
+                    </div>   -->
+                    <div style="width:100%">
+                        <label class="displayText">Email：</label>
+                        <input  class="inputWidth" [(ngModel)]="client_email"/>
+                        <!-- <textarea rows="5" class="inputWidth"  [(ngModel)]="client_shippingAddress"></textarea> -->
+                    </div>
+                </div>   
+                <!-- <div style="display: flex;width: 100%;margin-top: 10px;">              
+                    <div style="width:50%;display:flex">
+                        <label class="displayText">SG Client / 新加坡 :</label>
+                        <input [(ngModel)]="freeShipping" (change)="freeShippingChange($event)" type="checkbox"/>
+                    </div>
+                </div>            -->
+            </div>
             
             <div class="butArea" style="border: 2px solid grey;  margin-top: 10px;">
-                <!-- <div style="padding:5px" style="border-bottom: 2px solid grey;padding: 10px;">
+                <div style="padding:5px" style="border-bottom: 2px solid grey;padding: 10px;">
                     <div style="width:100%;display:inline-block;border-bottom: orangered 1px solid;">
-                        <h3 style="float:left;"><span>Product List / 货单</span></h3>
+                        <h3 style="float:left;"><span>Service List / 货单</span></h3>
                         <div style="float:right">
                             <nz-button-group nzSize="small" class="tableBut" >
                                 <button nzType="primary" title="{{tooltipOne[0]}}" nz-button 
-                                    (click)="addItems(item_code,item_quantity,item_unit_cost,total_amount)">Add Item</button>
+                                    (click)="addItems(item_code,item_quantity,item_unit_cost,item_sellingPrice)">Add Item</button>
+                                    <!-- [disabled]="tableEmpty" -->
                             </nz-button-group>
                         </div>
                     </div>
                     <div style="display: flex;width: 100%;">
                         <div style="width: 100%;">
-                            <label class="displayText">Product Code / 货名 :</label>
-                            <input  id="itemcode" [(ngModel)]="item_code" (keyup.enter)="InputChange($event)" />
-                            <img style="width:100px;height:100px"  [src]="formatImage(imagefile)" />
-                            <nz-select id="productItems" nzShowSearch class="inputWidth"
-                                [(ngModel)]="item_index"
-                                (ngModelChange)="ItemChange($event)"                    
-                                nzPlaceHolder="Select a Solution">
-                                <ng-container *ngFor="let p of Products; let i = index">Items
-                                    <nz-option  *ngIf="!ProductLoadSel" [nzValue]="i" [nzLabel]="p.id + '-' + p.name"></nz-option>
-                                </ng-container>
-                                
-                                <nz-option *ngIf="ProductLoadSel" nzDisabled nzCustomContent>
-                                    <i nz-icon nzType="loading" class="loading-icon"></i> Loading Data...
-                                </nz-option>
-                            </nz-select>
+                            <label class="displayText">Service Code / 货名 :</label>
+                            <textarea rows="5" class="inputWidth"  [(ngModel)]="item_code"></textarea>
                         </div>
                     </div>
-                    <div style="display: flex;width: 100%;margin-top: 10px;">
-                        <div>
-                            <label class="displayText">Product Name / 货名 ：</label>
-                            <label class="displayText">{{item_name}}</label>
-                        </div>
-                        <div>
+                    <div style="display: flex;width: 100%;">
+                        <div style="width:50%">
+                            <label class="displayText">Price Unit / 卖价 ：</label>
+                            <input  class="inputWidth" (change)="calTotal($event)" [(ngModel)]="item_unit_cost" />
+                        </div>                        
+                        <div style="width:50%">
                             <label class="displayText">Quantity / 数量 ：</label>
-                            <input  id="itemquantity" [(ngModel)]="item_quantity"  (keyup.enter)="qtyChange($event)" />
+                            <input  class="inputWidth"  (change)="calTotal($event)" [(ngModel)]="item_quantity" />
                         </div>
-                    </div> 
-                </div> -->
+                        <div style="width:50%">
+                            <label class="displayText">Total Price Unit / 卖价 ：</label>
+                            <input  class="inputWidth" [(ngModel)]="item_sellingPrice" />
+                        </div>
+                    </div>
+                </div>
                 <div class="divBut">
                     <nz-button-group nzSize="small" class="tableBut">
                         <button nzType="primary" title="{{tooltipOne[0]}}" nz-button [disabled]="tableEmpty"
@@ -106,7 +161,7 @@
                         </nz-dropdown-menu>
                     </div>
                 </div>
-                <nz-table #groupingTable id="PurchaseTable" [nzData]="ProductCheck" nzBordered nzSize="small"
+                <nz-table #groupingTable id="PurchaseTable" [nzData]="OrderItems" nzBordered nzSize="small"
                     nzHideOnSinglePage="true" [nzFrontPagination]="false" [nzNoResult]="emptyTemplate">
                     <ng-template #emptyTemplate>
                         <tr>
@@ -121,84 +176,39 @@
                     </ng-template>
                     <thead>
                         <tr>
-                            <ng-container *ngFor="let p of headerColumn">
+                            <ng-container *ngFor="let p of order_product">
                                 <th nzLeft class="firstTh" style="text-align: center;top: 54px;z-index: 20;"
                                     [colspan]="1">
                                     {{p}}
                                 </th>
                             </ng-container>
                         </tr>
-                        <tr>
-                            <ng-container *ngFor="let release of columnData">
-                                <th nz-tooltip [nzTooltipTitle]="titleTemplate" class="" nzLeft
-                                    style="text-align: center;top: 94px;z-index: 20;font-size: 12px;">
-                                    {{release.version}}
-                                    <span [ngClass]="{'techGuided' : !release.techGuided }"></span>
-                                    <span [ngClass]="{'genGuided': !release.genGuided }"></span>
-
-                                </th>
-                                <ng-template #titleTemplate>
-                                    <span>{{release.version}}</span><br>
-                                    <span>GA : {{formatTime(release.gaDate)}}</span><br>
-                                    <span *ngIf="release.rnLink"><a href="{{release.rnLink}}" target="_blank">Release
-                                            Notes</a><br></span>
-                                    <span *ngIf="release.dLink"><a href="{{release.dLink}}" target="_blank">Download
-                                            Page</a><br></span>
-                                </ng-template>
-                            </ng-container>
-                        </tr>
                     </thead>
                     <tbody>
-                        <ng-container *ngFor="let p of ProductCheck,let i = index">
-                            <tr *ngIf="p.stockcheck && p.stockcheck.status =='Conflict'">
+
+                        
+                        <ng-container *ngFor="let p of order_items.order_item,let i = index">
+                            <tr >
                                 <td>
-                                    {{p.id + '-' + p.name}}
-                                </td>  
-                                <td class="trDisplayLabel{{i}}">
-                                    {{p.stock}}
-                                </td>  
-                                <td class="trEditLabel{{i}}" style="display:none">
-                                    <input  class="listingeditinput" (change)="calTotalStock(i)"  [(ngModel)]="p.stock" />
-                                </td> 
-                                <td class="trDisplayLabel{{i}}">
-                                    {{p.stockcheck.quantity}}
-                                </td>  
-                                <td class="trEditLabel{{i}}" style="display:none">
-                                    <input  class="listingeditinput" (change)="calStockTotalStock(i)"  [(ngModel)]="p.stockcheck.quantity" />
-                                </td> 
-                                <td>
-                                    {{p.unit_cost}}
+                                    {{p.itemId}} 
+                                    <!-- - {{p.itemName}} -->
                                 </td>  
                                 <td>
-                                    {{p.total_stock}}
-                                </td>  
+                                    {{p.quantity}}
+                                </td>                                 
                                 <td>
-                                    <button nz-button nzType="primary" (click)="update(i)"><i nz-icon nzType="edit" ></i>Edit</button>                                 
+                                    {{p.sellingPrice}}
+                                </td>
+                                <td>
+                                    <button nzType="primary" nz-button 
+                                    (click)="deleteItem(i)">Delete</button>
+                                    
                                 </td>
                                    
                             </tr>    
                         </ng-container>
 
-                            <tr >
-                                <td >
-                                </td>  
-                                <td>
-                                    Total
-                                </td> 
-                                <td>
-                                    {{stock_check_total_stock_value}}
-                                </td>
-                                <td>
-                                    Total
-                                </td>  
-                                <td>
-                                    {{total_stock_value}}
-                                </td>  
-                                <td>                                
-                                </td>
-                                
-                            </tr>  
-                        
+
                     </tbody>
                 </nz-table>
                 <div id="PurchasePrint" [style.display]="copyType">

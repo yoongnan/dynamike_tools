@@ -276,6 +276,7 @@ export class StockCheckComponent implements OnInit {
         .then(
           data => { // Success
             this.ProductCheck = data["body"];
+            console.log(this.ProductCheck);
             for(let i =0;i<this.ProductCheck.length;i++){
               if(this.ProductCheck[i].stock>0){
                 this.total_stock_value = parseFloat(this.total_stock_value) + parseFloat(this.ProductCheck[i].total_stock);
@@ -425,7 +426,7 @@ export class StockCheckComponent implements OnInit {
   searchProduct(){
     if(this.item_code){
       let promise = new Promise((resolve, reject) => {
-        this.dcrService.getPOSProductbyCode(this.item_code)
+        this.dcrService.getProductbyCode(this.item_code)
           .toPromise()
           .then(
             data => { // Success

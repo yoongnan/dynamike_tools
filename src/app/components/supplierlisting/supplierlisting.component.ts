@@ -181,7 +181,7 @@ export class SupplierListingComponent implements OnInit {
   Suppliers :any;
   init() {
     let promise = new Promise((resolve, reject) => {
-      this.dcrService.getPOSSupplier()
+      this.dcrService.getSupplier()
         .toPromise()
         .then(
           data => { // Success
@@ -193,7 +193,7 @@ export class SupplierListingComponent implements OnInit {
           }
         );
     });
-    // this.dcrService.getPOSSupplier().subscribe(data => {
+    // this.dcrService.getSupplier().subscribe(data => {
     //   this.Suppliers = data;        
     //   console.log(this.Suppliers);
     // }, error => {

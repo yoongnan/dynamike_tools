@@ -372,7 +372,7 @@ export class AccountComponent implements OnInit {
     // }
     let d = new Date();
     this.purchase_date = new Date().toISOString().split("T")[0];
-    // this.dcrService.getPOSProduct().subscribe(data => {
+    // this.dcrService.getProduct().subscribe(data => {
     //   // this.LoadSel = false;
     //   this.Items = data;
     //   // this.dcrService.UpgradeProList = JSON.parse(JSON.stringify(data))
@@ -384,7 +384,7 @@ export class AccountComponent implements OnInit {
     // })
 
     let promise = new Promise((resolve, reject) => {
-      this.dcrService.getPOSOthersInvoiceType([1,2,3,4,5,6,16])
+      this.dcrService.getOthersInvoiceType([1,2,3,4,5,6,16])
         .toPromise()
         .then(
           data => { // Success
@@ -397,7 +397,7 @@ export class AccountComponent implements OnInit {
         );
     });
 
-    // this.dcrService.getPOSOthersInvoiceType([1,2,3,4,5,6,16]).subscribe(data => {
+    // this.dcrService.getOthersInvoiceType([1,2,3,4,5,6,16]).subscribe(data => {
     //   // this.LoadSel = false;
     //   this.InvoiceType = data;
     //   // this.dcrService.UpgradeProList = JSON.parse(JSON.stringify(data))

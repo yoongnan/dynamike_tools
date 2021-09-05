@@ -223,7 +223,7 @@ export class AccountListComponent implements OnInit {
   // }
   AccountYearChange(value){
     let promise = new Promise((resolve, reject) => {
-      this.dcrService.getPOSAccountList(value,this.month_index)
+      this.dcrService.getAccountList(value,this.month_index)
         .toPromise()
         .then(
           data => { // Success
@@ -236,7 +236,7 @@ export class AccountListComponent implements OnInit {
           }
         );
     });
-    // this.dcrService.getPOSAccountList(value,this.month_index).subscribe(data => {
+    // this.dcrService.getAccountList(value,this.month_index).subscribe(data => {
     //   // this.LoadSel = false;
     //   this.Purchases = data;
     //   // this.dcrService.UpgradeProList = JSON.parse(JSON.stringify(data))
@@ -249,7 +249,7 @@ export class AccountListComponent implements OnInit {
   }
   init() {
     let promise = new Promise((resolve, reject) => {
-      this.dcrService.getPOSAccountYear()
+      this.dcrService.getAccountYear()
         .toPromise()
         .then(
           data => { // Success
@@ -266,7 +266,7 @@ export class AccountListComponent implements OnInit {
     });
 
     let promise_1 = new Promise((resolve, reject) => {
-      this.dcrService.getPOSInvoiceType([1,2,3,4,5,6,7,16])
+      this.dcrService.getInvoiceType([1,2,3,4,5,6,7,16])
         .toPromise()
         .then(
           data => { // Success
@@ -279,7 +279,7 @@ export class AccountListComponent implements OnInit {
           }
         );
     });
-    // this.dcrService.getPOSInvoiceType([1,2,3,4,5,6,7,16]).subscribe(data => {
+    // this.dcrService.getInvoiceType([1,2,3,4,5,6,7,16]).subscribe(data => {
     //   this.InvoiceTypeLoadSel = false;
     //   this.InvoiceType = data;
     // }, error => {
@@ -302,7 +302,7 @@ export class AccountListComponent implements OnInit {
     
     // console.log(this.Purchases[value].id);
     let promise = new Promise((resolve, reject) => {
-      this.dcrService.getPOSPurchaseItems(this.Purchases[value].id)
+      this.dcrService.getPurchaseItems(this.Purchases[value].id)
         .toPromise()
         .then(
           data => { // Success
@@ -317,7 +317,7 @@ export class AccountListComponent implements OnInit {
           }
         );
     });
-    // this.dcrService.getPOSPurchaseItems(this.Purchases[value].id).subscribe(data => {
+    // this.dcrService.getPurchaseItems(this.Purchases[value].id).subscribe(data => {
     //   console.log(data);
     //   this.purchase_id = this.Purchases[value].id;
     //   this.PurchaseItems = data;     
@@ -566,7 +566,7 @@ export class AccountListComponent implements OnInit {
     let d = new Date();
     this.purchase_date = new Date().toISOString().split("T")[0];
     let promise = new Promise((resolve, reject) => {
-      this.dcrService.getPOSPurchaseById(i)
+      this.dcrService.getPurchaseById(i)
         .toPromise()
         .then(
           data => { // Success
@@ -591,7 +591,7 @@ export class AccountListComponent implements OnInit {
           }
         );
     });
-    // this.dcrService.getPOSPurchaseById(i).subscribe(data => {
+    // this.dcrService.getPurchaseById(i).subscribe(data => {
     //   this.Purchase = data;
     //   this.purchase_id=this.Purchase.id;
     //   this.paid=this.Purchase.paid;
@@ -614,7 +614,7 @@ export class AccountListComponent implements OnInit {
     // })
 
     let promise_1 = new Promise((resolve, reject) => {
-      this.dcrService.getPOSSuppliers()
+      this.dcrService.getSuppliers()
         .toPromise()
         .then(
           data => { // Success
@@ -626,7 +626,7 @@ export class AccountListComponent implements OnInit {
           }
         );
     });
-    // this.dcrService.getPOSSuppliers().subscribe(data => {
+    // this.dcrService.getSuppliers().subscribe(data => {
     //   this.SupplierLoadSel = false;
     //   this.Suppliers = data;
     // }, error => {
@@ -636,7 +636,7 @@ export class AccountListComponent implements OnInit {
     // })
 
     let promise_2 = new Promise((resolve, reject) => {
-      this.dcrService.getPOSInvoiceType([1,2,3,4,5,6,7,16])
+      this.dcrService.getInvoiceType([1,2,3,4,5,6,7,16])
         .toPromise()
         .then(
           data => { // Success
@@ -648,7 +648,7 @@ export class AccountListComponent implements OnInit {
           }
         );
     });
-    // this.dcrService.getPOSInvoiceType([1,2,3,4,5,6,7,16]).subscribe(data => {
+    // this.dcrService.getInvoiceType([1,2,3,4,5,6,7,16]).subscribe(data => {
     //   this.InvoiceLoadSel = false;
     //   this.InvoiceType = data;
     // }, error => {
@@ -673,7 +673,7 @@ export class AccountListComponent implements OnInit {
   searchProduct(){
     if(this.item_index){
       let promise = new Promise((resolve, reject) => {
-        this.dcrService.getPOSProductbyId(this.item_index)
+        this.dcrService.getProductbyId(this.item_index)
           .toPromise()
           .then(
             data => { // Success
@@ -694,7 +694,7 @@ export class AccountListComponent implements OnInit {
             }
           );
       });
-      // this.dcrService.getPOSProductbyId(this.item_index).subscribe(data => {
+      // this.dcrService.getProductbyId(this.item_index).subscribe(data => {
       //   this.Products = data;
       //   if(this.Products.length>0){
       //     let Product = this.Products[0];

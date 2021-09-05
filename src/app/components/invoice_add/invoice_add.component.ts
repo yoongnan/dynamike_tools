@@ -4,6 +4,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 //service
 import { DcrService } from "../../services/dcr.service";
 import { CommonService } from "../../services/common.service";
+import { CommonDynamikeService } from "../../services/common.dynamike.service";
 
 import * as moment from "moment";
 import { Router, ActivatedRoute } from '@angular/router';
@@ -12,11 +13,11 @@ import { Location } from '@angular/common';
 
 
 @Component({
-  selector: 'app-eshop_import',
-  templateUrl: './eshop_import.component.html',
-  styleUrls: ['./eshop_import.component.scss']
+  selector: 'app-invoice_add',
+  templateUrl: './invoice_add.component.html',
+  styleUrls: ['./invoice_add.component.scss']
 })
-export class EshopImportComponent implements OnInit {
+export class InvoiceAddComponent implements OnInit {
   ShowColumnData: any[];
   ShowColumn: string[] = [];
   tableShowOverflow: string;
@@ -32,6 +33,7 @@ export class EshopImportComponent implements OnInit {
   constructor(
     private dcrService: DcrService,
     private common: CommonService,
+    private commonDynamike: CommonDynamikeService,
     private message: NzMessageService,
     private elementRef: ElementRef,
     private route: ActivatedRoute,
@@ -70,7 +72,7 @@ export class EshopImportComponent implements OnInit {
   // get table data 
   isVisible: boolean = false;
   NoResultId = "No Data"
-  
+ 
 
   unCheck(value) {
     if (value.length == 1) {
@@ -96,7 +98,7 @@ export class EshopImportComponent implements OnInit {
   }
 
   clearTableData() {
-   
+    
   }
 
   productListData: any[];
@@ -110,11 +112,9 @@ export class EshopImportComponent implements OnInit {
   tableEmpty: boolean = true;
   
 
-
   //select mock data
   SelListModal: any = { "ProductData": [], "selectedPro": "" };
 
-  
 
   //change class
   displayStatus(status: number, note: string, rowChildRelease): string {
@@ -182,7 +182,7 @@ export class EshopImportComponent implements OnInit {
   }
 
   Provider : any;
-  order_product = ["Product Code / 代号","Quantity / 数量","Delete / 删除"];
+  order_product = ["Product Code / 代号","Quantity / 数量","Selling Price / 卖价","Delete / 删除"];
   date : any = "2021-04-18";
   client_id :any;
   invoice_no : any;
@@ -231,15 +231,19 @@ export class EshopImportComponent implements OnInit {
     order.provider = provider;
     order.client = client;
     order.paymentType = paymentType;
-    console.log(this.order_items);
-    this.dcrService.saveTransaction(order,this.order_items.order_item).subscribe(data => {
-      this.reset();
-      this.common.createModalMessage("Successful","save successful!!!").success();
-    }, error => {
-      if (error.error.text != "No Results") {
-        this.common.errStatus(error.status, error.error);
-      }
-    }).unsubscribe();
+    let promise = new Promise((resolve, reject) => {
+      this.dcrService.saveTransaction(order,this.order_items.order_item)
+        .toPromise()
+        .then(
+          res => { // Success
+            this.reset();
+            this.common.createModalMessage("Successful","save successful!!!").success();
+          },
+          msg => { // Error
+            this.common.createModalMessage(msg.error.error, msg.error.message).error()
+          }
+        );
+    });
   }
 
   freeShippingChange(value){
@@ -260,7 +264,8 @@ export class EshopImportComponent implements OnInit {
   init() {
     let d = new Date();
     this.date = new Date().toISOString().split("T")[0];
-    this.dcrService.getClient().subscribe(data => {
+    this.dcrService.getallClient().subscribe(data => {
+      console.log(data);
       this.ClientLoadSel = false;
       this.Client = data;
     }, error => {
@@ -279,14 +284,14 @@ export class EshopImportComponent implements OnInit {
       }
     })
 
-    // this.dcrService.getProduct().subscribe(data => {
-    //   this.ProductLoadSel = false;
-    //   this.Items = data;
-    // }, error => {
-    //   if (error.error.text != "No Results") {
-    //     this.common.errStatus(error.status, error.error);
-    //   }
-    // })
+    this.dcrService.getProducts().subscribe(data => {
+      this.ProductLoadSel = false;
+      this.Items = data;
+    }, error => {
+      if (error.error.text != "No Results") {
+        this.common.errStatus(error.status, error.error);
+      }
+    })
   }
 
   Client: any;
@@ -296,6 +301,7 @@ export class EshopImportComponent implements OnInit {
   client_name:any;
   client_contact:any;
   client_address:any;
+  client_email:any;
   client_shippingAddress:any;
   item_index:any;
   item_code:any;
@@ -303,22 +309,36 @@ export class EshopImportComponent implements OnInit {
   item_quantity:any;
   item_unit_cost:any;
   item_amount:any;
-  addItems(product_code,quantity){
+  item_sellingPrice:any;
+  OrderItems:any[];  
+  addItems(product_code,quantity,item_unit_cost,item_sellingPrice){
     // ,amount
+    this.item_name = product_code.replace("/n","<BR>");
     let order_item: any = {
       "invoiceId":this.orderId,
       "itemName": this.item_name,
-      "itemId": product_code,
+      "itemId": product_code.replace("/n","<BR>"),
       "quantity": quantity,
-      "unitPrice":0.00,
-      "totalPrice":0.00
-    } 
-    console.log(order_item);
+      "unitPrice":item_unit_cost,
+      "sellingPrice":item_sellingPrice,
+      "totalPrice":(quantity* item_unit_cost),
+      
+      "name": this.item_name,
+    }
+    if(!this.OrderItems){
+      this.OrderItems = [];
+      this.OrderItems.push(order_item);
+    }
     this.order_items.order_item.push(order_item);
-    
+  }
+  calTotal(value){
+    this.item_sellingPrice = parseFloat(this.item_unit_cost) * parseInt(this.item_quantity);
+    this.item_sellingPrice = parseFloat(this.item_sellingPrice).toFixed(2);
   }
 
   reset(){
+    this.item_sellingPrice = null;
+    this.OrderItems = null;
     this.order_items= { "order_item": []};
     this.client_index=null;
     this.client_name=null;
@@ -341,7 +361,11 @@ export class EshopImportComponent implements OnInit {
     this.shippingFees = parseFloat(this.shippingFees).toFixed(2);
     console.log(this.paymentDue);
   }
-  deleteItem(index){
+  deleteItem(index){    
+    this.OrderItems.splice(index,1);
+    if(this.OrderItems.length==0){
+      this.OrderItems=null;  
+    }    
     this.order_items.order_item.splice(index,1);
   }
 
@@ -354,10 +378,10 @@ export class EshopImportComponent implements OnInit {
   }
   ItemChange(value) {
     console.log(this.Items);
-    this.item_code = this.Items[value].product.id;
-    this.item_name = this.Items[value].product.name;
+    this.item_code = this.Items[value].code;
+    this.item_name = this.Items[value].name;
     // this.item_quantity = this.Items[value].quantity;
-    // this.item_unit_cost = this.Items[value].product.unitCost;
+    this.item_unit_cost = this.Items[value].unit_cost;
     
     // this.item_amount:any;
     
@@ -371,22 +395,19 @@ export class EshopImportComponent implements OnInit {
       "billingAddress": this.client_address,
       "shippingAddress": this.client_shippingAddress
     } 
-    this.dcrService.saveClient(client).subscribe(data => {
-      this.client_id = this.SelListModal.ProductData.id;
-      this.dcrService.getClient().subscribe(data => {
-        this.Client = data;
-
-      }, error => {
-        if (error.error.text != "No Results") {
-          this.common.errStatus(error.status, error.error);
-        }
-      })
-      this.common.createModalMessage("Successful","save successful!!!").success();
-    }, error => {
-      if (error.error.text != "No Results") {
-        this.common.errStatus(error.status, error.error);
-      }
-    }).unsubscribe();
+    let promise = new Promise((resolve, reject) => {
+      this.dcrService.saveClient(client)
+        .toPromise()
+        .then(
+          res => { // Success
+            this.Client = res;
+            this.common.createModalMessage("Successful","save successful!!!").success();
+          },
+          msg => { // Error
+            this.common.createModalMessage(msg.error.error, msg.error.message).error()
+            }
+          );
+    });
   }
   Products:any;
   searchProduct(){
@@ -395,13 +416,13 @@ export class EshopImportComponent implements OnInit {
         this.Products = data;
         if(this.Products.length>0){
           let Product = this.Products[0];
-          this.item_code = Product.product.id;
+          this.item_code = Product.product.code;
           this.item_unit_cost = Product.product.unitCost;
           this.item_name = Product.product.name;
         }else{
           this.item_code = null;
           this.item_unit_cost = null;
-          this.item_name = null;
+          // this.item_name = null;
           this.common.createModalMessage("Failed","No Product Found").error();
         }
         
@@ -413,71 +434,22 @@ export class EshopImportComponent implements OnInit {
 
     }    
   }
-  
-  imageFile : File;
-  shopeeUpload(fileInput: any) {
-    if (fileInput.target.files && fileInput.target.files[0]) {
-      this.imageFile = fileInput.target.files[0];
-      
-      let promise = new Promise((resolve, reject) => {
-        this.dcrService.uploadShopee(this.imageFile)
-          .toPromise()
-          .then(
-            res => { // Success
-              this.imageFile = null;
-              this.common.createModalMessage("Successful","save successful!!!").success();
-            },
-            msg => { // Error
-              this.imageFile = null;
-              this.common.createModalMessage(msg.error.error, msg.error.message).error()
-            }
-          );
-      });
 
+  cashSalesInfo:any;
+  generateInvoice() {
+    this.cashSalesInfo = {
+      "clientName": this.client_name,
+      "cashSalesNo": this.orderId,
+      "address": this.client_address.replace("/n","<BR>"),
+      "contactNo": this.client_contact,
+      "email": this.client_email,
+      "date": this.date,
+      "ringgit": null,
+      "cents": null,
+      // "subTotal": subTotal,
+      // "finalTotal": subTotal,
+      "orderItemList": this.order_items.order_item
     }
-  }
-
-  lazadaOrderUpload(fileInput: any) {
-    if (fileInput.target.files && fileInput.target.files[0]) {
-      this.imageFile = fileInput.target.files[0];
-      
-      let promise = new Promise((resolve, reject) => {
-        this.dcrService.uploadLazada(this.imageFile)
-          .toPromise()
-          .then(
-            res => { // Success
-              this.imageFile = null;
-              this.common.createModalMessage("Successful","save successful!!!").success();
-            },
-            msg => { // Error
-              this.imageFile = null;
-              this.common.createModalMessage(msg.error.error, msg.error.message).error()
-            }
-          );
-      });
-
-    }
-  }
-
-  lazadaTransactionUpload(fileInput: any) {
-    if (fileInput.target.files && fileInput.target.files[0]) {
-      this.imageFile = fileInput.target.files[0];
-      
-      let promise = new Promise((resolve, reject) => {
-        this.dcrService.uploadLazadaTransaction(this.imageFile)
-          .toPromise()
-          .then(
-            res => { // Success
-              this.imageFile = null;
-              this.common.createModalMessage("Successful","save successful!!!").success();
-            },
-            msg => { // Error
-              this.imageFile = null;
-              this.common.createModalMessage(msg.error.error, msg.error.message).error()
-            }
-          );
-      });
-
-    }
+    this.dcrService.exportPDF(this.cashSalesInfo,'invoices');
   }
 }

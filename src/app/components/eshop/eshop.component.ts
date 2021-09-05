@@ -261,7 +261,7 @@ export class EshopComponent implements OnInit {
   init() {
     let d = new Date();
     this.date = new Date().toISOString().split("T")[0];
-    this.dcrService.getPOSClient().subscribe(data => {
+    this.dcrService.getallClient().subscribe(data => {
       this.ClientLoadSel = false;
       this.Client = data;
     }, error => {
@@ -270,7 +270,7 @@ export class EshopComponent implements OnInit {
       }
     })
 
-    this.dcrService.getPOSProvider().subscribe(data => {
+    this.dcrService.getProvider().subscribe(data => {
       this.ProviderLoadSel = false;
       console.log(data);
       this.Provider = data;
@@ -280,7 +280,7 @@ export class EshopComponent implements OnInit {
       }
     })
 
-    this.dcrService.getPOSProducts().subscribe(data => {
+    this.dcrService.getProducts().subscribe(data => {
       this.ProductLoadSel = false;
       this.Items = data;
     }, error => {
@@ -401,7 +401,7 @@ export class EshopComponent implements OnInit {
   Products:any;
   searchProduct(){
     if(this.item_index){
-      this.dcrService.getPOSProductbyId(this.item_index).subscribe(data => {
+      this.dcrService.getProductbyId(this.item_index).subscribe(data => {
         this.Products = data;
         if(this.Products.length>0){
           let Product = this.Products[0];
@@ -427,7 +427,7 @@ export class EshopComponent implements OnInit {
   Payments: any;
   searchOrder(){
     if(this.searchOrderId){
-      this.dcrService.getPOSPaymentByOrderId(this.searchOrderId).subscribe(data => {
+      this.dcrService.getPaymentByOrderId(this.searchOrderId).subscribe(data => {
         console.log(data);
         this.Payments = data;
         if(this.Payments){

@@ -270,8 +270,7 @@ export class StockTickComponent implements OnInit {
   }
 
   
-  stockCheck(){ 
-    
+  stockCheck(){     
 
     let promise = new Promise((resolve, reject) => {
       this.dcrService.stockCheck(this.stockChecks.stockCheck)
@@ -335,16 +334,16 @@ export class StockTickComponent implements OnInit {
   init() {
     let d = new Date();
     this.purchase_date = new Date().toISOString().split("T")[0];
-    // this.dcrService.getPOSProducts().subscribe(data => {
-    //   this.ProductLoadSel = false;
-    //   this.Items = data;
-    // }, error => {
-    //   if (error.error.text != "No Results") {
-    //     this.common.errStatus(error.status, error.error);
-    //   }
-    // })
+    this.dcrService.getProducts().subscribe(data => {
+      this.ProductLoadSel = false;
+      this.Items = data;
+    }, error => {
+      if (error.error.text != "No Results") {
+        this.common.errStatus(error.status, error.error);
+      }
+    })
 
-    // this.dcrService.getPOSSuppliers().subscribe(data => {
+    // this.dcrService.getSuppliers().subscribe(data => {
     //   this.SupplierLoadSel = false;
     //   this.Suppliers = data;
     // }, error => {
@@ -353,7 +352,7 @@ export class StockTickComponent implements OnInit {
     //   }
     // })
 
-    // this.dcrService.getPOSInvoiceType([1,2,3,4,5,6,7]).subscribe(data => {
+    // this.dcrService.getInvoiceType([1,2,3,4,5,6,7]).subscribe(data => {
     //   this.InvoiceLoadSel = false;
     //   this.InvoiceType = data;
     // }, error => {
@@ -383,15 +382,18 @@ export class StockTickComponent implements OnInit {
   }
 
   ItemChange(value) {
-    this.item_code = this.Items[value].code;
-    this.searchProduct();
+    console.log('ItemChange');
+    console.log(value);
+    console.log(this.Items);
+    this.item_code = this.Products[value].id;
+    this.searchProductById();
   }
 
   Products:any;
-  searchProduct(){
+  searchProductById(){
     if(this.item_code){
       let promise = new Promise((resolve, reject) => {
-        this.dcrService.getPOSProductbyCode(this.item_code)
+        this.dcrService.getProductbyId(this.item_code)
           .toPromise()
           .then(
             data => { // Success
@@ -399,13 +401,52 @@ export class StockTickComponent implements OnInit {
               if(this.Products.length>0){
                 if(this.Products.length==1){
                   let Product = this.Products[0];
-                  this.item_code = Product.code;
+                  this.item_code = Product.id;
                   this.item_name = Product.name;
                   this.imagefile = Product.image;
                   this.item_unit_cost = Product.unitCost;
                   document.getElementById("itemquantity").focus();
                 }else{            
                   this.ProductLoadSel = false;
+                  // this.Items = data;
+                  document.getElementById("productItems").getElementsByTagName('input')[0].click();
+                }
+              }else{
+                this.item_code = null;
+                this.item_unit_cost = null;
+                this.item_name = null;
+                this.imagefile = null;
+                this.common.createModalMessage("Failed","No Product Found").error();
+              }
+            },
+            msg => { // Error
+              this.common.createModalMessage(msg.error.error, msg.error.message).error()
+            }
+          );
+      });
+      
+
+    }    
+  }
+  searchProduct(){
+    if(this.item_code){
+      let promise = new Promise((resolve, reject) => {
+        this.dcrService.getProductbyCode(this.item_code)
+          .toPromise()
+          .then(
+            data => { // Success
+              this.Products = data;
+              if(this.Products.length>0){
+                if(this.Products.length==1){
+                  let Product = this.Products[0];
+                  this.item_code = Product.id;
+                  this.item_name = Product.name;
+                  this.imagefile = Product.image;
+                  this.item_unit_cost = Product.unitCost;
+                  document.getElementById("itemquantity").focus();
+                }else{            
+                  this.ProductLoadSel = false;
+                  // this.Items = data;
                   document.getElementById("productItems").getElementsByTagName('input')[0].click();
                 }
               }else{

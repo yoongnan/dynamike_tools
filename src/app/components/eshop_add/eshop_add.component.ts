@@ -264,7 +264,8 @@ export class EshopAddComponent implements OnInit {
   init() {
     let d = new Date();
     this.date = new Date().toISOString().split("T")[0];
-    this.dcrService.getPOSClient().subscribe(data => {
+    this.dcrService.getallClient().subscribe(data => {
+      console.log(data);
       this.ClientLoadSel = false;
       this.Client = data;
     }, error => {
@@ -273,7 +274,7 @@ export class EshopAddComponent implements OnInit {
       }
     })
 
-    this.dcrService.getPOSProvider().subscribe(data => {
+    this.dcrService.getProvider().subscribe(data => {
       this.ProviderLoadSel = false;
       console.log(data);
       this.Provider = data;
@@ -283,7 +284,7 @@ export class EshopAddComponent implements OnInit {
       }
     })
 
-    this.dcrService.getPOSProducts().subscribe(data => {
+    this.dcrService.getProducts().subscribe(data => {
       this.ProductLoadSel = false;
       this.Items = data;
     }, error => {
@@ -300,6 +301,7 @@ export class EshopAddComponent implements OnInit {
   client_name:any;
   client_contact:any;
   client_address:any;
+  client_email:any;
   client_shippingAddress:any;
   item_index:any;
   item_code:any;
@@ -318,7 +320,9 @@ export class EshopAddComponent implements OnInit {
       "quantity": quantity,
       "unitPrice":item_unit_cost,
       "sellingPrice":item_sellingPrice,
-      "totalPrice":(quantity* item_unit_cost)
+      "totalPrice":(quantity* item_unit_cost),
+      
+      "name": this.item_name,
     }
     if(!this.OrderItems){
       this.OrderItems = [];
@@ -372,7 +376,7 @@ export class EshopAddComponent implements OnInit {
     this.item_code = this.Items[value].code;
     this.item_name = this.Items[value].name;
     // this.item_quantity = this.Items[value].quantity;
-    // this.item_unit_cost = this.Items[value].product.unitCost;
+    this.item_unit_cost = this.Items[value].unit_cost;
     
     // this.item_amount:any;
     
@@ -403,7 +407,7 @@ export class EshopAddComponent implements OnInit {
   Products:any;
   searchProduct(){
     if(this.item_index){
-      this.dcrService.getPOSProductbyId(this.item_index).subscribe(data => {
+      this.dcrService.getProductbyId(this.item_index).subscribe(data => {
         this.Products = data;
         if(this.Products.length>0){
           let Product = this.Products[0];
@@ -424,5 +428,25 @@ export class EshopAddComponent implements OnInit {
       })
 
     }    
+  }
+
+  cashSalesInfo:any;
+  // generateCashSale(cashSalesNo,subTotal) {
+  generateCashSale() {
+    this.cashSalesInfo = {
+      "clientName": this.client_name,
+      "cashSalesNo": this.orderId,
+      "address": this.client_address,
+      "contactNo": this.client_contact,
+      "email": this.client_email,
+      "date": this.date,
+      "ringgit": null,
+      "cents": null,
+      // "subTotal": subTotal,
+      // "finalTotal": subTotal,
+      "orderItemList": this.order_items.order_item
+    }
+    
+    this.dcrService.exportPDF(this.cashSalesInfo,'cashsales');
   }
 }

@@ -179,9 +179,11 @@ export class EshopListingComponent implements OnInit {
     this.tdSelected = "131355";
   }
 
-  purchase_date : any = new Date().toISOString().split("T")[0];
+  payments_date : any;
+  // = new Date().toISOString().split("T")[0];
   invoice_no : any;
 
+  dailyReport: boolean = false;
   YearLoadSel: boolean = true;
   ProviderLoadSel:boolean = true;
   AccountYears: any;
@@ -199,29 +201,33 @@ export class EshopListingComponent implements OnInit {
   {"id":10,"value":"October 十月"},
   {"id":11,"value":"November 十一月"},
   {"id":12,"value":"December 十二月"}]
-  header=["","Date","Order No","Client Name","Payment Credit","Payment Fees","Shipping Fees","Marketing Fees","Payment Due", 
+  header=[
+    // "",
+  "Date","Order No","Client Name","Payment Credit","Payment Fees","Shipping Fees","Other Fees","Payment Due", 
+  "adjusted","COGS","Earned", 
   // "Free Shipping",
   "Status","Provider","Details"];
-
+  detailheader=[
+  "Date","Order Count","Payment Credit","Payment Fees","Shipping Fees","Other Fees","Payment Due", 
+  "adjusted","COGS","Earned"];
   Payments :any;
   Providers:any;
   provider_index;
   init() {
     let promise = new Promise((resolve, reject) => {
-      this.dcrService.getPOSTransactionYear()
+      this.dcrService.getTransactionYear()
         .toPromise()
         .then(
           data => { // Success
             this.YearLoadSel = false;
-            this.AccountYears = data;          
-            
+            this.AccountYears = data;         
             this.year_index = this.AccountYears[0];  
           },
           msg => { // Error
             this.common.createModalMessage(msg.error.error, msg.error.message).error()
           }
         );
-    });    this.dcrService.getPOSProvider().subscribe(data => {
+    });    this.dcrService.getProvider().subscribe(data => {
       this.ProviderLoadSel = false;
       this.Providers = data;
     }, error => {
@@ -247,29 +253,183 @@ export class EshopListingComponent implements OnInit {
       }
     }
   }
+  loadingMore = true;
+  totalPage:any;
+  pageSize:any;
+  currentPage:any
+  totalElements;
+  footer = true;
+  totalPaymentperPage:any = 0;
+  totalEarnedperPage:any = 0;
+  totalCOGSperPage:any = 0;
   AccountYearChange(value){
     if(this.month_index){   
-      console.log("yearchange: Month:"+ this.month_index);
       let promise = new Promise((resolve, reject) => {
-        this.dcrService.getPOSPayment(value,this.month_index,this.provider_index)
+        this.orderId = null;        
+        this.payments_date =null;
+        this.dcrService.getPaginationPayment(value,this.month_index,this.provider_index,null,null)
           .toPromise()
           .then(
             data => { // Success
-              this.Payments = data;   
+              this.totalPaymentperPage =0.0;
+              this.totalEarnedperPage =0.0;
+              this.totalCOGSperPage =0.0;
+              this.footer = false;
               console.log(data);
+              this.Payments = data["content"];              
+              this.Payments.forEach(obj => {
+                this.totalPaymentperPage += parseFloat(obj.paymentDue);
+                this.totalEarnedperPage += parseFloat(obj.earned);
+                this.totalCOGSperPage += parseFloat(obj.totalCOGS);
+              });
+              this.totalPaymentperPage = this.totalPaymentperPage.toFixed(2);
+              this.totalEarnedperPage = this.totalEarnedperPage.toFixed(2);
+              this.totalCOGSperPage = this.totalCOGSperPage.toFixed(2);
+              this.currentPage = data['pageable']['pageNumber']; 
+              this.currentPage = data['pageable']['pageNumber']; 
+              this.currentPage +=1;
+              this.totalPage = data["totalPages"];
+              this.totalElements = data["totalElements"];
+              this.pageSize = data["pageable"]['pageSize'];
+              if(this.totalPage > this.currentPage){
+                this.loadingMore = false;
+              }else{
+                this.loadingMore = true;
+              }
+              this.dailyReport = false;
+              this.detailReportMonthly =false;
             },
             msg => { // Error
               this.common.createModalMessage(msg.error.error, msg.error.message).error()
             }
           );
       });
-      // this.dcrService.getPOSPayment(value,this.month_index,this.provider_index).subscribe(data => {
-      //   this.Payments = data;
-      // }, error => {
-      //   if (error.error.text != "No Results") {
-      //     this.common.errStatus(error.status, error.error);
-      //   }
-      // })
+    }
+  }
+  
+  detailReportMonthly:boolean = false;
+  searchByMonthChange(){
+    if(this.month_index){   
+      let promise = new Promise((resolve, reject) => {
+        this.orderId = null;
+        this.provider_index =null;
+        this.dcrService.paymentsByMonth(this.year_index,this.month_index)
+          .toPromise()
+          .then(
+            data => { // Success
+              this.totalPaymentperPage =0.0;
+              this.totalEarnedperPage =0.0;
+              this.totalCOGSperPage =0.0;
+              this.totalElements = 0.0;
+              this.Payments = data;         
+              this.Payments.forEach(obj => {
+                this.totalPaymentperPage += parseFloat(obj.paymentDue);
+                this.totalElements += parseFloat(obj.orderCount);
+                this.totalEarnedperPage += parseFloat(obj.earned);
+                this.totalCOGSperPage += parseFloat(obj.totalCOGS);
+                // this.totalElements += 1;
+              });
+              this.totalPaymentperPage = this.totalPaymentperPage.toFixed(2);
+              this.totalEarnedperPage = this.totalEarnedperPage.toFixed(2);
+              this.totalCOGSperPage = this.totalCOGSperPage.toFixed(2);
+              // this.currentPage = data['pageable']['pageNumber']; 
+              // this.currentPage = data['pageable']['pageNumber']; 
+              this.currentPage +=1;
+              this.totalPage = this.totalElements;
+              this.pageSize = this.totalElements;
+              this.loadingMore = false;
+              this.dailyReport = true;
+              this.detailReportMonthly =true;
+              this.footer = true;
+            },
+            msg => { // Error
+              this.common.createModalMessage(msg.error.error, msg.error.message).error()
+            }
+          );
+      });
+    }
+  }
+  
+  DateChange(value){
+    let promise = new Promise((resolve, reject) => {
+      this.orderId = null;
+      this.year_index =null;
+      this.month_index =null;
+      this.provider_index =null;
+      this.dcrService.getPaymentByDate(value)
+        .toPromise()
+        .then(
+          data => { // Success
+            this.totalPaymentperPage =0.0;
+            this.totalEarnedperPage =0.0;
+            this.totalCOGSperPage =0.0;
+            this.totalElements = 0.0;
+            this.Payments = data;         
+            this.Payments.forEach(obj => {
+              this.totalPaymentperPage += parseFloat(obj.paymentDue);
+              this.totalEarnedperPage += parseFloat(obj.earned);
+              this.totalCOGSperPage += parseFloat(obj.totalCOGS);
+              this.totalElements += 1;
+            });
+            this.totalPaymentperPage = this.totalPaymentperPage.toFixed(2);
+            this.totalEarnedperPage = this.totalEarnedperPage.toFixed(2);
+            this.totalCOGSperPage = this.totalCOGSperPage.toFixed(2);
+            // this.currentPage = data['pageable']['pageNumber']; 
+            // this.currentPage = data['pageable']['pageNumber']; 
+            this.currentPage +=1;
+            this.totalPage = this.totalElements;
+            this.pageSize = this.totalElements;
+            this.loadingMore = false;
+            this.dailyReport = true;
+            this.footer = true;
+          },
+          msg => { // Error
+            this.common.createModalMessage(msg.error.error, msg.error.message).error()
+          }
+        );
+    });
+  }
+  
+  nextProductPage(value){
+    if(value != this.currentPage){
+      this.orderId = null;
+      let promise = new Promise((resolve, reject) => {
+        this.dcrService.getPaginationPayment(this.year_index,this.month_index,this.provider_index,value-1,this.pageSize)
+          .toPromise()
+          .then(
+            data => { // Success
+              this.totalPaymentperPage =0.0;
+              this.totalEarnedperPage =0.0;
+              this.totalCOGSperPage =0.0;
+              this.footer = false;
+              console.log(data);
+              this.Payments = data["content"];              
+              this.Payments.forEach(obj => {
+                this.totalPaymentperPage += parseFloat(obj.paymentDue);
+                this.totalEarnedperPage += parseFloat(obj.earned);
+                this.totalCOGSperPage += parseFloat(obj.totalCOGS);
+              });
+              this.totalPaymentperPage = this.totalPaymentperPage.toFixed(2);
+              this.totalEarnedperPage = this.totalEarnedperPage.toFixed(2);
+              this.totalCOGSperPage = this.totalCOGSperPage.toFixed(2);
+              this.currentPage = data['pageable']['pageNumber']; 
+              this.currentPage = data['pageable']['pageNumber']; 
+              this.currentPage +=1;
+              this.totalPage = data["totalPages"];
+              this.totalElements = data["totalElements"];
+              this.pageSize = data["pageable"]['pageSize'];
+              if(this.totalPage > this.currentPage){
+                this.loadingMore = false;
+              }else{
+                this.loadingMore = true;
+              }
+              this.dailyReport = false;
+            },
+            msg => { // Error
+              this.common.createModalMessage(msg.error.error, msg.error.message).error()
+            }
+          );
+      });
     }
   }
   OrderItems:any;  
@@ -279,10 +439,8 @@ export class EshopListingComponent implements OnInit {
   isModalVisible = false;
   showModal(value): void {
     this.isModalVisible = true;   
-    
-     
     let promise = new Promise((resolve, reject) => {
-      this.dcrService.getPOSProducts()
+      this.dcrService.getProducts()
         .toPromise()
         .then(
           data => { // Success
@@ -295,7 +453,7 @@ export class EshopListingComponent implements OnInit {
           }
         );
     });
-    // this.dcrService.getPOSProducts().subscribe(data => {
+    // this.dcrService.getProducts().subscribe(data => {
     //   this.ProductLoadSel = false;
     //   this.Items = data;
     // }, error => {
@@ -305,20 +463,19 @@ export class EshopListingComponent implements OnInit {
     // })
     this.invoiceId = this.Payments[value].orderId;
     let promise_1 = new Promise((resolve, reject) => {
-      this.dcrService.getPOSOrderItems(this.Payments[value].orderId)
+      this.dcrService.getOrderItems(this.Payments[value].orderId)
         .toPromise()
         .then(
           data => { // Success
             this.OrderItems = data;  
-            this.OldOrderItems=JSON.parse(JSON.stringify(data));
-            
+            this.OldOrderItems=JSON.parse(JSON.stringify(data));            
           },
           msg => { // Error
             this.common.createModalMessage(msg.error.error, msg.error.message).error()
           }
         );
     });
-    // this.dcrService.getPOSOrderItems(this.Payments[value].orderId).subscribe(data => {
+    // this.dcrService.getOrderItems(this.Payments[value].orderId).subscribe(data => {
     //   this.OrderItems = data;  
     //   this.OldOrderItems=JSON.parse(JSON.stringify(data));
     //   document.getElementsByClassName("ant-modal")[0].setAttribute("style","width:100%");
@@ -381,41 +538,55 @@ export class EshopListingComponent implements OnInit {
   searchOrder(){
     if(this.orderId){
       let promise = new Promise((resolve, reject) => {
-        this.dcrService.getPOSPaymentByOrderId(this.orderId)
+        this.dcrService.getPaymentByOrderId(this.orderId)
           .toPromise()
           .then(
             data => { // Success
               let arr = [];
               arr.push(data);
               this.Payments = arr;
+              this.dailyReport = false;
+              this.detailReportMonthly =false;
+              
+              this.year_index =null;
+              this.month_index =null;
+              this.provider_index =null;
+              this.payments_date =null;
+              this.footer = true;
             },
             msg => { // Error
               this.common.createModalMessage(msg.error.error, msg.error.message).error()
             }
           );
       });
-      // this.dcrService.getPOSPaymentByOrderId(this.orderId).subscribe(data => {
-      //   this.Payments = data;
-      // }, error => {
-      //   if (error.error.text != "No Results") {
-      //     this.common.errStatus(error.status, error.error);
-      //   }
-      // })
 
     }    
   }
 
   amountChange(value){
+      this.Payments[value].paymentDue = parseFloat(this.Payments[value].paymentCredit) + parseFloat(this.Payments[value].paymentFees) ;
+      if(parseFloat(this.Payments[value].shippingFees)){
+        this.Payments[value].paymentDue = this.Payments[value].paymentDue + parseFloat(this.Payments[value].shippingFees);
+        this.Payments[value].shippingFees = parseFloat(this.Payments[value].shippingFees).toFixed(2);
+      }
+      if(parseFloat(this.Payments[value].othersFees)){
+        this.Payments[value].paymentDue = this.Payments[value].paymentDue + parseFloat(this.Payments[value].othersFees);
+        this.Payments[value].othersFees = parseFloat(this.Payments[value].othersFees).toFixed(2);
+      }
+
+      this.Payments[value].paymentCredit = parseFloat(this.Payments[value].paymentCredit).toFixed(2);
+      this.Payments[value].paymentFees = parseFloat(this.Payments[value].paymentFees).toFixed(2);
+      this.Payments[value].adjusted = parseFloat(this.Payments[value].adjusted).toFixed(2);
+
+      
+      if(parseFloat(this.Payments[value].adjusted)){
+        this.Payments[value].paymentDue = this.Payments[value].paymentDue + parseFloat(this.Payments[value].adjusted);
+      }
+
+      this.Payments[value].paymentDue = parseFloat(this.Payments[value].paymentDue).toFixed(2);
+      this.Payments[value].earned = parseFloat(this.Payments[value].paymentDue) - parseFloat(this.Payments[value].totalCOGS);
+      this.Payments[value].earned = parseFloat(this.Payments[value].earned).toFixed(2);
     
-    this.Payments[value].paymentDue = parseFloat(this.Payments[value].paymentCredit) + parseFloat(this.Payments[value].paymentFees) + parseFloat(this.Payments[value].shippingFees)
-                                      + parseFloat(this.Payments[value].othersFees);
-    this.Payments[value].paymentDue = parseFloat(this.Payments[value].paymentDue).toFixed(2);
-    
-    this.Payments[value].paymentCredit = parseFloat(this.Payments[value].paymentCredit).toFixed(2);
-    this.Payments[value].paymentFees = parseFloat(this.Payments[value].paymentFees).toFixed(2);
-    this.Payments[value].othersFees = parseFloat(this.Payments[value].othersFees).toFixed(2);
-    this.Payments[value].shippingFees = parseFloat(this.Payments[value].shippingFees).toFixed(2);
-    console.log(this.Payments[value]);
   }
 
   
@@ -436,7 +607,7 @@ export class EshopListingComponent implements OnInit {
   item_sellingPrice:any;
   searchProduct(){
     let promise = new Promise((resolve, reject) => {
-      this.dcrService.getPOSProductbyId(this.item_code)
+      this.dcrService.getProductbyId(this.item_code)
         .toPromise()
         .then(
           data => { // Success
@@ -458,7 +629,7 @@ export class EshopListingComponent implements OnInit {
           }
         );
     });
-    // this.dcrService.getPOSProductbyId(this.item_code).subscribe(data => {
+    // this.dcrService.getProductbyId(this.item_code).subscribe(data => {
     //   this.Products = data;
     //   if(this.Products.length>0){
     //     let Product = this.Products[0];

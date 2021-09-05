@@ -134,6 +134,13 @@
                         </ng-container>
 
                     </tbody>
+                    <tfoot  *ngIf="!footer">
+                        <tr >
+                            <td colspan="7" >
+                                <nz-pagination style="text-align: center;" (nzPageIndexChange)="nextProductPage($event)"  [nzPageIndex]="currentPage" [nzTotal]="totalElements" [nzPageSize]="pageSize" nzSimple></nz-pagination>
+                            </td>
+                        </tr>
+                    </tfoot>
                 </nz-table>
                 <div id="PurchasePrint" [style.display]="copyType">
                     <table>

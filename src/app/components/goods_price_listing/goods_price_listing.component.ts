@@ -186,7 +186,7 @@ export class GoodsPriceListComponent implements OnInit {
   }
   AccountYearChange(value){
 
-    this.dcrService.getPOSExpiredCheck(value).subscribe(data => {
+    this.dcrService.getExpiredCheck(value).subscribe(data => {
       // this.LoadSel = false;
       this.Purchases = data;
       console.log(data);
@@ -215,7 +215,7 @@ export class GoodsPriceListComponent implements OnInit {
     
     // console.log(this.Purchases[value].id);
     console.log(this.Purchases[value].id);
-    this.dcrService.getPOSPurchaseItems(this.Purchases[value].id).subscribe(data => {
+    this.dcrService.getPurchaseItems(this.Purchases[value].id).subscribe(data => {
       console.log(data);
       this.purchase_id = this.Purchases[value].id;
       this.PurchaseItems = data;     
@@ -510,7 +510,7 @@ export class GoodsPriceListComponent implements OnInit {
   EditInit(i) {
     let d = new Date();
     this.purchase_date = new Date().toISOString().split("T")[0];
-    this.dcrService.getPOSPurchaseById(i).subscribe(data => {
+    this.dcrService.getPurchaseById(i).subscribe(data => {
       this.Purchase = data;
       this.purchase_id=this.Purchase.id;
       this.paid=this.Purchase.paid;
@@ -532,7 +532,7 @@ export class GoodsPriceListComponent implements OnInit {
       }
     })
 
-    this.dcrService.getPOSSuppliers().subscribe(data => {
+    this.dcrService.getSuppliers().subscribe(data => {
       this.SupplierLoadSel = false;
       this.Suppliers = data;
     }, error => {
@@ -541,7 +541,7 @@ export class GoodsPriceListComponent implements OnInit {
       }
     })
 
-    this.dcrService.getPOSInvoiceType([1,2,3,4,5,6,7,16]).subscribe(data => {
+    this.dcrService.getInvoiceType([1,2,3,4,5,6,7,16]).subscribe(data => {
       this.InvoiceLoadSel = false;
       this.InvoiceType = data;
     }, error => {
@@ -566,7 +566,7 @@ export class GoodsPriceListComponent implements OnInit {
   currentStockValue:any;
   searchProduct(){
     if(this.item_code){
-      this.dcrService.getPOSExpiredCheck(this.item_code).subscribe(data => {
+      this.dcrService.getExpiredCheck(this.item_code).subscribe(data => {
         this.Purchases = data;
         console.log(data);
         if(this.Purchases.length>0){

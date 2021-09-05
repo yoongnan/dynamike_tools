@@ -178,36 +178,92 @@ export class ClientListingComponent implements OnInit {
   
   header=["","Id","Name","Contact No","Biiling Address","Shipping Address","Action"];
 
+  loadingMore = true;
+  totalPage:any;
+  pageSize:any;
+  currentPage:any
+  totalElements;
+  footer = true;
   Clients :any;
   init() {
     let promise = new Promise((resolve, reject) => {
-      this.dcrService.getPOSClients()
+      this.dcrService.getPaginationClients(null,null)
         .toPromise()
         .then(
           data => { // Success
-            this.Clients = data;        
-            console.log(this.Clients);
-          this.common.createModalMessage("Successful","save successful!!!").success();
-          
+            this.footer = false;
+            console.log(data);
+            this.Clients = data["content"];
+            this.currentPage = data['pageable']['pageNumber']; 
+            this.currentPage = data['pageable']['pageNumber']; 
+            this.currentPage +=1;
+            this.totalPage = data["totalPages"];
+            this.totalElements = data["totalElements"];
+            console.log(data);
+            this.pageSize = data["pageable"]['pageSize'];
+            if(this.totalPage > this.currentPage){
+              this.loadingMore = false;
+            }else{
+              this.loadingMore = true;
+            }
           },
           msg => { // Error
             this.common.createModalMessage(msg.error.error, msg.error.message).error()
           }
         );
     });
-    // this.dcrService.getPOSClients().subscribe(data => {
-    //   this.Clients = data;        
-    //   console.log(this.Clients);
-    // }, error => {
-    //   if (error.error.text != "No Results") {
-    //     this.common.errStatus(error.status, error.error);
-    //   }
-    // })
+    // let promise = new Promise((resolve, reject) => {
+    //   this.dcrService.getClients()
+    //     .toPromise()
+    //     .then(
+    //       data => { // Success
+    //         this.Clients = data;        
+    //         console.log(this.Clients);
+    //       this.common.createModalMessage("Successful","save successful!!!").success();
+          
+    //       },
+    //       msg => { // Error
+    //         this.common.createModalMessage(msg.error.error, msg.error.message).error()
+    //       }
+    //     );
+    // });
     
   }
 
-  All ="All / 全部";
+  
+  nextProductPage(value){
+    console.log("nextPage:"+value);
+    if(value != this.currentPage){
+      let promise = new Promise((resolve, reject) => {
+        this.dcrService.getPaginationClients(value-1,this.pageSize)
+          .toPromise()
+          .then(
+            data => { // Success
+              this.footer = false;
+              console.log(data);
+              this.Clients = data["content"];
+              this.currentPage = data['pageable']['pageNumber']; 
+              this.currentPage = data['pageable']['pageNumber']; 
+              this.currentPage +=1;
+              this.totalPage = data["totalPages"];
+              this.totalElements = data["totalElements"];
+              console.log(data);
+              this.pageSize = data["pageable"]['pageSize'];
+              if(this.totalPage > this.currentPage){
+                this.loadingMore = false;
+              }else{
+                this.loadingMore = true;
+              }
+            },
+            msg => { // Error
+              this.common.createModalMessage(msg.error.error, msg.error.message).error()
+            }
+          );
+      });
+    }
+  }
 
+  All ="All / 全部";
   
   update(value){
     

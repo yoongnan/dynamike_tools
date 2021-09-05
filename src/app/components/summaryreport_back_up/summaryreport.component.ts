@@ -244,14 +244,14 @@ export class SummaryReportBackupComponent implements OnInit {
 
   AccountYearChange(value){
     
-    this.dcrService.getPOSCashFlowReport(value).subscribe(data => {
+    this.dcrService.getCashFlowReport(value).subscribe(data => {
       this.CashFlowReport = data;        
     }, error => {
       if (error.error.text != "No Results") {
         this.common.errStatus(error.status, error.error);
       }
     })
-    this.dcrService.getPOSExpenditureReport(value).subscribe(data => {
+    this.dcrService.getExpenditureReport(value).subscribe(data => {
       this.ExpenditureReport = data;        
     }, error => {
       if (error.error.text != "No Results") {
@@ -259,7 +259,7 @@ export class SummaryReportBackupComponent implements OnInit {
       }
     })
 
-    this.dcrService.getPOSCapitalReport(value).subscribe(data => {
+    this.dcrService.getCapitalReport(value).subscribe(data => {
       console.log(data);
       this.CapitalReport = data;    
           
@@ -269,7 +269,7 @@ export class SummaryReportBackupComponent implements OnInit {
       }
     })
 
-    this.dcrService.getPOSMonthlyReport(value).subscribe(data => {
+    this.dcrService.getMonthlyReport(value).subscribe(data => {
       this.monthReport =data;      
       console.log(data);
 
@@ -294,7 +294,7 @@ export class SummaryReportBackupComponent implements OnInit {
   }
   init() {
     let promise = new Promise((resolve, reject) => {
-      this.dcrService.getPOSAccountYear()
+      this.dcrService.getAccountYear()
         .toPromise()
         .then(
           data => { // Success

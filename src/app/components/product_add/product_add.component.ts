@@ -501,7 +501,7 @@ export class ProductAddComponent implements OnInit {
   SupplierLoadSel: boolean = true;
   init() {
     let promise = new Promise((resolve, reject) => {
-      this.dcrService.getPOSProductTypes()
+      this.dcrService.getProductTypes()
         .toPromise()
         .then(
           data => { // Success
@@ -514,7 +514,7 @@ export class ProductAddComponent implements OnInit {
           }
         );
     });
-    // this.dcrService.getPOSProductTypes().subscribe(data => {
+    // this.dcrService.getProductTypes().subscribe(data => {
     //   this.ProductTypeLoadSel = false;
     //   this.ProductTypes = data;
     // }, error => {
@@ -523,7 +523,7 @@ export class ProductAddComponent implements OnInit {
     //   }
     // })
     let promise_1 = new Promise((resolve, reject) => {
-      this.dcrService.getPOSSuppliers()
+      this.dcrService.getSuppliers()
         .toPromise()
         .then(
           data => { // Success
@@ -535,7 +535,7 @@ export class ProductAddComponent implements OnInit {
           }
         );
     });
-    // this.dcrService.getPOSSuppliers().subscribe(data => {
+    // this.dcrService.getSuppliers().subscribe(data => {
     //   this.SupplierLoadSel = false;
     //   this.Suppliers = data;
     // }, error => {

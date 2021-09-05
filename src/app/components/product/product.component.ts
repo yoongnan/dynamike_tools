@@ -511,7 +511,7 @@ export class ProductComponent implements OnInit {
   SupplierLoadSel: boolean = true;
   init() {
     let promise = new Promise((resolve, reject) => {
-      this.dcrService.getPOSProductTypes()
+      this.dcrService.getProductTypes()
         .toPromise()
         .then(
           data => { // Success
@@ -523,7 +523,7 @@ export class ProductComponent implements OnInit {
           }
         );
     });
-    // this.dcrService.getPOSProductTypes().subscribe(data => {
+    // this.dcrService.getProductTypes().subscribe(data => {
     //   this.ProductTypeLoadSel = false;
     //   this.ProductTypes = data;     
       
@@ -533,7 +533,7 @@ export class ProductComponent implements OnInit {
     //   }
     // })
     let promise_1 = new Promise((resolve, reject) => {
-      this.dcrService.getPOSSuppliers()
+      this.dcrService.getSuppliers()
         .toPromise()
         .then(
           data => { // Success
@@ -545,7 +545,7 @@ export class ProductComponent implements OnInit {
           }
         );
     });
-    // this.dcrService.getPOSSuppliers().subscribe(data => {
+    // this.dcrService.getSuppliers().subscribe(data => {
     //   this.SupplierLoadSel = false;
     //   this.Suppliers = data;
     // }, error => {
@@ -554,7 +554,7 @@ export class ProductComponent implements OnInit {
     //   }
     // })
     let promise_2 = new Promise((resolve, reject) => {
-      this.dcrService.getPOSProducts()
+      this.dcrService.getProducts()
         .toPromise()
         .then(
           data => { // Success
@@ -566,7 +566,7 @@ export class ProductComponent implements OnInit {
           }
         );
     });
-    // this.dcrService.getPOSProducts().subscribe(data => {
+    // this.dcrService.getProducts().subscribe(data => {
     //   this.ProductLoadSel = false;
     //   this.Items = data;
     // }, error => {
@@ -584,7 +584,7 @@ export class ProductComponent implements OnInit {
     
 
     let promise = new Promise((resolve, reject) => {
-      this.dcrService.getPOSProductbyId(this.product_id)
+      this.dcrService.getProductbyId(this.product_id)
         .toPromise()
         .then(
           data => { // Success

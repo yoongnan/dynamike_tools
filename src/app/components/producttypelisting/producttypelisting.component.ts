@@ -181,7 +181,7 @@ export class ProductTypeListingComponent implements OnInit {
   ProductTypes :any;
   init() {
     let promise = new Promise((resolve, reject) => {
-      this.dcrService.getPOSProductTypes()
+      this.dcrService.getProductTypes()
         .toPromise()
         .then(
           data => { // Success
@@ -193,7 +193,7 @@ export class ProductTypeListingComponent implements OnInit {
           }
         );
     });
-    // this.dcrService.getPOSProductTypes().subscribe(data => {
+    // this.dcrService.getProductTypes().subscribe(data => {
     //   this.ProductTypes = data;        
     //   console.log(this.ProductTypes);
     // }, error => {

@@ -90,9 +90,6 @@
     </div>
     <div class="tableShow-area" [style.width]="tableShowWid"  style="height: fit-content;"
         (scroll)="onScroll($event)">
-        <!-- <div class="">
-            <nz-alert nzBanner nzMessage="Unselect 'Hide Legacy Releases' to check more interoperability." nzCloseable></nz-alert>
-        </div> -->
         <div class="tableShow-table">
             <div class="butArea">
                 <div [style.height]="'30px'" class="tableTop" >
@@ -190,34 +187,6 @@
 
                     </tbody>
                 </nz-table>
-                <div id="PurchasePrint" [style.display]="copyType">
-                    <table>
-                        <tr>
-                            <th> </th>
-                            <ng-container *ngFor="let productName of headerName">                                
-                                <th *ngFor="let release of headerNameArr[productName]">
-                                    {{release.productName}} {{release.version}} <span
-                                    *ngIf="!release.techGuided||!release.genGuided">*</span>
-                                </th>
-                            </ng-container>
-                        </tr>
-                        <tbody>
-                            <tr *ngFor="let p of groupingTable.data">
-                                <td>{{p.versionName}}                                    
-                                    <span *ngIf="!p.techGuided||!p.genGuided">*</span>
-                                </td>
-                                <ng-container *ngFor="let release of p.releases,let i = index">
-                                    <td *ngIf="release.footnotes==undefined" [style.background]="'#d7d7d7'"></td>
-                                    <td *ngIf="release.footnotes!=undefined">
-                                        <span>{{tableTdWords[release.status]}}</span>
-                                    </td>
-                                </ng-container>
-                            </tr>
-                        </tbody>
-                        <tr></tr>
-                    </table>
-                    <span>* This is a legacy release. For more information, please refer to https://lifecycle.vmware.com.</span>
-                </div>
             </div>
         </div>
     </div>
@@ -290,18 +259,12 @@
                 </th>
             </ng-container>
         </tr>
-        <!-- <tr>            
-            <th>Product Code</th>
-            <th>Unit Cost</th>
-            <th>Quantity</th>
-            <th>Action</th>
-        </tr> -->
     </thead>
         
         <tbody>
             <tr *ngFor="let p of PurchaseItems, let i = index">
                 <td>
-                    {{i}}
+                    {{i+1}}
                 </td>
                 <td *ngIf="p.name">
                     {{p.productCode + '-' + p.name}} 
@@ -353,9 +316,6 @@
     </div>
     <div class="tableShow-area" [style.width]="tableShowWid" style="height: fit-content;"
         (scroll)="onScroll($event)">
-        <!-- <div class="">
-            <nz-alert nzBanner nzMessage="Unselect 'Hide Legacy Releases' to check more interoperability." nzCloseable></nz-alert>
-        </div> -->
         <style>
             .displayText{
                 width:250px;
@@ -413,7 +373,6 @@
                         </nz-button-group>
                     </div>
                 </div>
-                <!-- padding: 20px 10px 20px 10px; -->
                 <div style="display: flex;width: 100%;">
                     <div style="width: 100%;">
                         <label class="displayText">Supplier / 供应商 ：</label>
@@ -510,18 +469,6 @@
                                 Hide Columns
                             </span>
                         </a>
-                        <!-- <nz-dropdown-menu #menu="nzDropdownMenu">
-                            <div class="dropDownCls">
-                                <div class="Down-header">Show Columns</div>
-                                <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="unCheck($event)">
-                                    <div nz-row>
-                                        <div *ngFor="let i of ShowColumnData" nz-col nzSpan="24"><label nz-checkbox
-                                                [nzValue]="i" [nzDisabled]="i.disabled"
-                                                [ngModel]="i.checked">{{i.name}}</label></div>
-                                    </div>
-                                </nz-checkbox-wrapper>
-                            </div>
-                        </nz-dropdown-menu> -->
                     </div>
                 </div>
                 <nz-table #groupingTable id="PurchaseTable" [nzData]="purchase_items.purchase_item" nzBordered nzSize="small"
@@ -551,7 +498,7 @@
                         <ng-container *ngFor="let p of purchase_items.purchase_item,let i = index">
                             <tr >                                
                                 <td>
-                                    {{i}}
+                                    {{i+1}}
                                 </td>
                                 <td *ngIf="p.name">
                                     {{p.productCode + '-' + p.name}} 
@@ -575,37 +522,8 @@
                                    
                             </tr>    
                         </ng-container>
-
                     </tbody>
                 </nz-table>
-                <div id="PurchasePrint" [style.display]="copyType">
-                    <table>
-                        <tr>
-                            <th> </th>
-                            <ng-container *ngFor="let productName of headerName">                                
-                                <th *ngFor="let release of headerNameArr[productName]">
-                                    {{release.productName}} {{release.version}} <span
-                                    *ngIf="!release.techGuided||!release.genGuided">*</span>
-                                </th>
-                            </ng-container>
-                        </tr>
-                        <tbody>
-                            <tr *ngFor="let p of groupingTable.data">
-                                <td>{{p.versionName}}                                    
-                                    <span *ngIf="!p.techGuided||!p.genGuided">*</span>
-                                </td>
-                                <ng-container *ngFor="let release of p.releases,let i = index">
-                                    <td *ngIf="release.footnotes==undefined" [style.background]="'#d7d7d7'"></td>
-                                    <td *ngIf="release.footnotes!=undefined">
-                                        <span>{{tableTdWords[release.status]}}</span>
-                                    </td>
-                                </ng-container>
-                            </tr>
-                        </tbody>
-                        <tr></tr>
-                    </table>
-                    <span>* This is a legacy release. For more information, please refer to https://lifecycle.vmware.com.</span>
-                </div>
             </div>
         </div>
     </div>

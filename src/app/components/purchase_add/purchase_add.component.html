@@ -230,8 +230,8 @@
                     <tbody>
                         <ng-container *ngFor="let p of purchase_items.purchase_item,let i = index">
                             <tr >
-                                <td *ngIf="p.name">
-                                    {{i}} 
+                                <td >
+                                    {{i+1}} 
                                 </td> 
                                 <td *ngIf="p.name">
                                     {{p.productCode + '-' + p.name}} 

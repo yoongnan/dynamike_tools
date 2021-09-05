@@ -403,7 +403,7 @@ export class StockCheckListComponent implements OnInit {
     let d = new Date();
     this.purchase_date = new Date().toISOString().split("T")[0];
     let promise = new Promise((resolve, reject) => {
-      this.dcrService.getPOSAccountYear()
+      this.dcrService.getAccountYear()
         .toPromise()
         .then(
           data => { // Success
@@ -497,7 +497,7 @@ export class StockCheckListComponent implements OnInit {
   searchProduct(){
     if(this.item_code){
       let promise = new Promise((resolve, reject) => {
-        this.dcrService.getPOSProductbyCode(this.item_code)
+        this.dcrService.getProductbyCode(this.item_code)
           .toPromise()
           .then(
             data => { // Success
@@ -505,7 +505,7 @@ export class StockCheckListComponent implements OnInit {
               if(this.Products.length>0){
                 if(this.Products.length==1){
                   let Product = this.Products[0];
-                  this.item_code = Product.code;
+                  this.item_code = Product.id;
                   this.item_name = Product.name;
                   this.imagefile = Product.image;
                   this.item_unit_cost = Product.unitCost;
