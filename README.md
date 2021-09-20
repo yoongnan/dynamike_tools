@@ -2,7 +2,7 @@
 
 upgrade the npm version
 ========================
-npm install -g n 
+npm install -g npm@latest
 
 install necessary library
 =========================
