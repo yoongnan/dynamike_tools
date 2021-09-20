@@ -1,5 +1,11 @@
 # dynamike_tools
 
+upgrade the npm version
+========================
+npm install -g n 
+
+install necessary library
+=========================
 npm install
 npm install @angular/cli
 npm install @angular-devkit/build-angular 
